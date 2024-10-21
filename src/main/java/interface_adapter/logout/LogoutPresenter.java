@@ -9,7 +9,7 @@ import use_case.logout.LogoutOutputBoundary;
 import use_case.logout.LogoutOutputData;
 
 /**
- * The Presenter for the Logout Use Case.
+ * The Presenter for the Logout Use Case. TEST
  */
 public class LogoutPresenter implements LogoutOutputBoundary {
 
