@@ -1,4 +1,3 @@
-import app.MainNoteApplication;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -27,7 +26,6 @@ public class    LoginClass{
     }
 
     public static void main(String[] args) throws Exception {
-        MainNoteApplication.main(args);
         serverSetup.main(args);
         if (getStoredToken("access_token") == null || isTokenExpired()) {
             if (getStoredToken("refresh_token") != null) {
