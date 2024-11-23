@@ -29,14 +29,14 @@ public class LoginPanel {
                 if (accessToken == null) {
                     try {
                         // Simulate generating a login link
-                        String loginLink = LoginClass2.getLoginLink();
+                        String loginLink = LoginClass.getLoginLink();
 
                         // Open the link in the default browser
                         Desktop.getDesktop().browse(URI.create(loginLink));
                         JOptionPane.showMessageDialog(frame, "Please login using the opened link.");
 
                         // Simulate token retrieval
-                        accessToken = LoginClass2.getToken(); // Replace with real token retrieval logic
+                        accessToken = LoginClass.getAccess_token(); // Replace with real token retrieval logic
 
                         // Create and add the "Continue" button dynamically
                         JButton continueButton = new JButton("Continue");

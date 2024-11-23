@@ -197,4 +197,22 @@ public class    LoginClass{
             return null;
         }
     }
+    public static String getLoginLink() throws Exception {
+        // Generate a new code verifier
+        codeVerifier = generateCodeVerifier();
+        String codeChallenge = generateCodeChallenge(codeVerifier);
+
+        // Construct the authorization URL
+        String authUrl = AUTHORIZATION_ENDPOINT + "?response_type=code"
+                + "&client_id=" + CLIENT_ID
+                + "&scope=" + URLEncoder.encode(SCOPE, "UTF-8")
+                + "&redirect_uri=" + URLEncoder.encode(REDIRECT_URI, "UTF-8")
+                + "&code_challenge_method=S256"
+                + "&code_challenge=" + codeChallenge;
+
+        // Store code verifier for later use in token exchange
+        storeToken("code_verifier", codeVerifier);
+
+        return authUrl; // Return the constructed URL
+    }
 }
