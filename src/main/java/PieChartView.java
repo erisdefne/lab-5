@@ -5,16 +5,23 @@ import java.util.Map;
 public class PieChartView extends JPanel {
 
     private Map<String, Double> data;
-    private Color[] colors = {
-            Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW,
-            Color.ORANGE, Color.CYAN, Color.MAGENTA,
-            new Color(128, 0, 128), // Custom Purple
-            new Color(255, 165, 0)  // Custom Orange
+    private Color[] pastelColors = {
+            new Color(174, 41, 51),
+            new Color(121, 236, 121), // Light Green
+            new Color(45, 136, 154), // Light Blue
+            new Color(127, 41, 179, 255), // Light Pink
+            new Color(214, 197, 15), // Light Yellow
+            new Color(126, 88, 151), // Navajo White
+            new Color(255, 182, 193), // Light Pink
+            new Color(240, 230, 140), // Khaki
+            new Color(175, 238, 238), // Pale Turquoise
+            new Color(255, 239, 213)  // Papaya Whip
     };
 
     public PieChartView(Map<String, Double> data) {
         this.data = data;
-        setPreferredSize(new Dimension(500, 500)); // Adjust JPanel size
+        setPreferredSize(new Dimension(1000, 800)); // Adjust JPanel size
+        setBackground(Color.DARK_GRAY); // Set panel background color
     }
 
     @Override
@@ -28,9 +35,20 @@ public class PieChartView extends JPanel {
         double total = data.values().stream().mapToDouble(Double::doubleValue).sum();
         int startAngle = 0;
 
-        int chartSize = 400; // Size of the chart
-        int centerX = 250;   // Center X of the chart
-        int centerY = 250;   // Center Y of the chart
+        int panelWidth = getWidth();
+        int panelHeight = getHeight();
+        int chartSize = Math.min(panelWidth, panelHeight) - 100; // Size of the chart
+        int centerX = panelWidth / 2 - chartSize / 2; // Center X
+        int centerY = panelHeight / 2 - chartSize / 2; // Center Y
+        int centerXChart = panelWidth / 2; // Exact X center
+        int centerYChart = panelHeight / 2; // Exact Y center
+
+        // Set font to Broadway with a fallback to Arial if unavailable
+        Font broadwayFont = new Font("Broadway", Font.BOLD, 20);
+        g2d.setFont(broadwayFont);
+        FontMetrics metrics = g2d.getFontMetrics();
+
+
         int i = 0;
 
         for (Map.Entry<String, Double> entry : data.entrySet()) {
@@ -38,21 +56,24 @@ public class PieChartView extends JPanel {
             double percentage = (entry.getValue() / total) * 360;
 
             // Draw the slice
-            g2d.setColor(colors[i % colors.length]);
-            g2d.fillArc(50, 50, chartSize, chartSize, startAngle, (int) Math.round(percentage));
+            g2d.setColor(pastelColors[i % pastelColors.length]);
+            g2d.fillArc(centerX, centerY, chartSize, chartSize, startAngle, (int) Math.round(percentage));
 
             // Calculate the midpoint angle for the slice
             int midAngle = startAngle + (int) Math.round(percentage / 2);
 
-            // Calculate the label position using trigonometry
-            int labelRadius = chartSize / 2 + 20; // Distance from center for labels
+            // Calculate the label position using trigonometry (slightly inside the slice)
+            int labelRadius = chartSize / 3; // Slightly inside the chart
             double radians = Math.toRadians(midAngle);
-            int labelX = centerX + (int) (Math.cos(radians) * labelRadius);
-            int labelY = centerY - (int) (Math.sin(radians) * labelRadius);
+            int labelX = centerXChart + (int) (Math.cos(radians) * labelRadius);
+            int labelY = centerYChart - (int) (Math.sin(radians) * labelRadius);
 
-            // Draw the label
-            g2d.setColor(Color.BLACK);
-            g2d.drawString(entry.getKey(), labelX - 15, labelY + 5); // Center label around point
+            // Draw the label centered within the slice
+            String label = entry.getKey();
+            int textWidth = metrics.stringWidth(label);
+            int textHeight = metrics.getHeight();
+            g2d.setColor(Color.BLACK); // Text color
+            g2d.drawString(label, labelX - textWidth / 2, labelY + textHeight / 4);
 
             // Increment for the next slice
             startAngle += (int) Math.round(percentage);
@@ -69,12 +90,11 @@ public class PieChartView extends JPanel {
 
         PieChartView chart = new PieChartView(dummyData);
 
-        JFrame frame = new JFrame("Pie Chart with Labels");
+        JFrame frame = new JFrame("Pie Chart with Labels Inside");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(chart);
         frame.pack(); // Adjust frame size automatically to fit JPanel
         frame.setVisible(true);
     }
 }
-
 
