@@ -83,14 +83,18 @@ public class PieChartView extends JPanel {
 
     public static void main(String[] args) {
         Map<String, Double> dummyData = Map.of(
-                "Category A", 30.0,
-                "Category B", 50.0,
-                "Category C", 20.0
+                "Pop", 25.0,
+                "Rock", 20.0,
+                "Hip-Hop", 15.0,
+                "Jazz", 10.0,
+                "Classic", 5.0,
+                "Electric", 25.0
+
         );
 
         PieChartView chart = new PieChartView(dummyData);
 
-        JFrame frame = new JFrame("Pie Chart with Labels Inside");
+        JFrame frame = new JFrame("Your Playlist: Decomposed by Spotilyze");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(chart);
         frame.pack(); // Adjust frame size automatically to fit JPanel
