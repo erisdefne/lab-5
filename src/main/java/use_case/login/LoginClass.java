@@ -1,4 +1,7 @@
+package use_case.login;
+
 import org.json.JSONObject;
+import use_case.login.serverSetup;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -10,7 +13,7 @@ import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Properties;
 
-public class    LoginClass{
+public class LoginClass{
 
     private static final String CLIENT_ID = "16b096a1941b433cbb6e44973a7fc00c"; // Replace with actual client ID
     private static final String REDIRECT_URI = "http://localhost:3000/callback"; // Replace with actual redirect URI
@@ -195,5 +198,24 @@ public class    LoginClass{
         } catch (IOException e) {
             return null;
         }
+    }
+
+    public static String getLoginLink() throws Exception {
+        // Generate a new code verifier
+        codeVerifier = generateCodeVerifier();
+        String codeChallenge = generateCodeChallenge(codeVerifier);
+
+        // Construct the authorization URL
+        String authUrl = AUTHORIZATION_ENDPOINT + "?response_type=code"
+                + "&client_id=" + CLIENT_ID
+                + "&scope=" + URLEncoder.encode(SCOPE, "UTF-8")
+                + "&redirect_uri=" + URLEncoder.encode(REDIRECT_URI, "UTF-8")
+                + "&code_challenge_method=S256"
+                + "&code_challenge=" + codeChallenge;
+
+        // Store code verifier for later use in token exchange
+        storeToken("code_verifier", codeVerifier);
+
+        return authUrl; // Return the constructed URL
     }
 }
