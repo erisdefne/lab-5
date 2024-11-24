@@ -34,7 +34,6 @@ public class    LoginClass{
                 redirectToSpotifyAuthorize();
                 while (getStoredToken("access_token") == null) {}
                 access_token = getStoredToken("access_token");
-                ArtistInfoClass.main(args);
             }
         } else {
             String accessToken = getStoredToken("access_token");
