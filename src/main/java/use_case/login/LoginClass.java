@@ -1,4 +1,7 @@
+package use_case.login;
+
 import org.json.JSONObject;
+import use_case.login.serverSetup;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -16,7 +19,7 @@ public class LoginClass{
     private static final String REDIRECT_URI = "http://localhost:3000/callback"; // Replace with actual redirect URI
     private static final String AUTHORIZATION_ENDPOINT = "https://accounts.spotify.com/authorize";
     private static final String TOKEN_ENDPOINT = "https://accounts.spotify.com/api/token";
-    private static final String SCOPE = "user-read-private user-read-email user-top-read";
+    private static final String SCOPE = "user-read-private user-read-email";
 
     private static String codeVerifier;
     public static String access_token;
@@ -34,7 +37,6 @@ public class LoginClass{
                 redirectToSpotifyAuthorize();
                 while (getStoredToken("access_token") == null) {}
                 access_token = getStoredToken("access_token");
-                ArtistInfoClass.main(args);
             }
         } else {
             String accessToken = getStoredToken("access_token");
@@ -196,5 +198,24 @@ public class LoginClass{
         } catch (IOException e) {
             return null;
         }
+    }
+
+    public static String getLoginLink() throws Exception {
+        // Generate a new code verifier
+        codeVerifier = generateCodeVerifier();
+        String codeChallenge = generateCodeChallenge(codeVerifier);
+
+        // Construct the authorization URL
+        String authUrl = AUTHORIZATION_ENDPOINT + "?response_type=code"
+                + "&client_id=" + CLIENT_ID
+                + "&scope=" + URLEncoder.encode(SCOPE, "UTF-8")
+                + "&redirect_uri=" + URLEncoder.encode(REDIRECT_URI, "UTF-8")
+                + "&code_challenge_method=S256"
+                + "&code_challenge=" + codeChallenge;
+
+        // Store code verifier for later use in token exchange
+        storeToken("code_verifier", codeVerifier);
+
+        return authUrl; // Return the constructed URL
     }
 }
