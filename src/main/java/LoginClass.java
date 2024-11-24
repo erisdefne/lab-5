@@ -10,13 +10,13 @@ import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Properties;
 
-public class    LoginClass{
+public class LoginClass{
 
     private static final String CLIENT_ID = "16b096a1941b433cbb6e44973a7fc00c"; // Replace with actual client ID
     private static final String REDIRECT_URI = "http://localhost:3000/callback"; // Replace with actual redirect URI
     private static final String AUTHORIZATION_ENDPOINT = "https://accounts.spotify.com/authorize";
     private static final String TOKEN_ENDPOINT = "https://accounts.spotify.com/api/token";
-    private static final String SCOPE = "user-read-private user-read-email";
+    private static final String SCOPE = "user-read-private user-read-email user-top-read";
 
     private static String codeVerifier;
     public static String access_token;
