@@ -1,5 +1,3 @@
-package use_case.login;
-
 import org.json.JSONObject;
 
 import java.io.*;
@@ -45,7 +43,7 @@ public class    LoginClass{
     }
 
     // Redirects user to Spotify authorization page
-    public static String redirectToSpotifyAuthorize() throws Exception {
+    private static void redirectToSpotifyAuthorize() throws Exception {
         codeVerifier = generateCodeVerifier();
         String codeChallenge = generateCodeChallenge(codeVerifier);
 
@@ -61,7 +59,7 @@ public class    LoginClass{
         storeToken("code_verifier", codeVerifier);
 
         // Redirect user (print URL for user to visit)
-        return authUrl;
+        System.out.println("Visit this URL to log in: " + authUrl);
     }
 
     // Gets token with the authorization code
@@ -198,41 +196,5 @@ public class    LoginClass{
         } catch (IOException e) {
             return null;
         }
-    }
-    public static String gettoken() throws Exception {
-        // Check if the access token exists and is not expired
-        String accessToken = getStoredToken("access_token");
-        if (accessToken != null && !isTokenExpired()) {
-            return accessToken; // Return the valid access token
-        }
-
-        // If the access token is expired or missing, try to refresh it
-        String refreshToken = getStoredToken("refresh_token");
-        if (refreshToken != null) {
-            refreshToken(); // This will refresh the access token and store it
-            return getStoredToken("access_token"); // Return the refreshed token
-        }
-
-        // If no valid access or refresh token, prompt the user to log in again
-        throw new Exception("No valid access token available. Please log in again.");
-    }
-
-    public static String getLoginLink() throws Exception {
-        // Generate a new code verifier
-        codeVerifier = generateCodeVerifier();
-        String codeChallenge = generateCodeChallenge(codeVerifier);
-
-        // Construct the authorization URL
-        String authUrl = AUTHORIZATION_ENDPOINT + "?response_type=code"
-                + "&client_id=" + CLIENT_ID
-                + "&scope=" + URLEncoder.encode(SCOPE, "UTF-8")
-                + "&redirect_uri=" + URLEncoder.encode(REDIRECT_URI, "UTF-8")
-                + "&code_challenge_method=S256"
-                + "&code_challenge=" + codeChallenge;
-
-        // Store code verifier for later use in token exchange
-        storeToken("code_verifier", codeVerifier);
-
-        return authUrl; // Return the constructed URL
     }
 }
