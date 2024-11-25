@@ -8,16 +8,24 @@ public class PieChartView extends JPanel {
 
     private Map<String, Double> data;
     private Color[] pastelColors = {
-            new Color(174, 41, 51),
-            new Color(121, 236, 121), // Light Green
-            new Color(45, 136, 154), // Light Blue
-            new Color(127, 41, 179, 255), // Light Pink
-            new Color(214, 197, 15), // Light Yellow
-            new Color(126, 88, 151), // Navajo White
+            new Color(255, 97, 110),
+            new Color(165, 243, 165), // Light Green
+            new Color(88, 192, 221), // Light Blue
+            new Color(194, 100, 244, 255), // Light Pink
+            new Color(237, 224, 123), // Light Yellow
+            new Color(211, 150, 255), // Navajo White
             new Color(255, 182, 193), // Light Pink
             new Color(240, 230, 140), // Khaki
             new Color(175, 238, 238), // Pale Turquoise
-            new Color(255, 239, 213)  // Papaya Whip
+            new Color(255, 239, 213),  // Papaya Whip
+            new Color(224, 187, 228), // Pastel Lavender
+            new Color(198, 227, 245), // Powder Blue
+            new Color(255, 223, 186), // Apricot
+            new Color(203, 232, 202), // Mint Green
+            new Color(255, 201, 201), // Pastel Pink
+            new Color(250, 235, 215), // Antique White
+            new Color(240, 222, 204), // Almond
+            new Color(229, 204, 255), // Mauve
     };
 
     public PieChartView(Map<String, Double> data) {
