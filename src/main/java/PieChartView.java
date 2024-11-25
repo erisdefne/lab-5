@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.HashMap;
 import java.util.Map;
 
 public class PieChartView extends JPanel {
@@ -82,21 +83,15 @@ public class PieChartView extends JPanel {
     }
 
     public static void main(String[] args) {
-        Map<String, Double> dummyData = Map.of(
-                "Pop", 25.0,
-                "Rock", 20.0,
-                "Hip-Hop", 15.0,
-                "Jazz", 10.0,
-                "Classic", 5.0,
-                "Electric", 25.0
+        UserInfoClass userInfoClass = new UserInfoClass();
+        Map<String, Double> genreData = userInfoClass.organizeTracks();
 
-        );
+        PieChartView chartView = new PieChartView(genreData);
 
-        PieChartView chart = new PieChartView(dummyData);
 
         JFrame frame = new JFrame("Your Playlist: Decomposed by Spotilyze");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add(chart);
+        frame.add(chartView);
         frame.pack(); // Adjust frame size automatically to fit JPanel
         frame.setVisible(true);
     }
