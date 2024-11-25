@@ -11,7 +11,7 @@ public class PieChartView extends JPanel {
             new Color(255, 97, 110),
             new Color(165, 243, 165), // Light Green
             new Color(88, 192, 221), // Light Blue
-            new Color(194, 100, 244, 255), // Light Pink
+            new Color(194, 100, 244), // Light Pink
             new Color(237, 224, 123), // Light Yellow
             new Color(211, 150, 255), // Navajo White
             new Color(255, 182, 193), // Light Pink
