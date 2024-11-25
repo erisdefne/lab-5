@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class PieChartView extends JPanel {
 
@@ -84,9 +85,16 @@ public class PieChartView extends JPanel {
 
     public static void main(String[] args) {
         UserInfoClass userInfoClass = new UserInfoClass();
-        Map<String, Double> genreData = userInfoClass.organizeTracks();
+        Map<String, Integer> genreData = userInfoClass.organizeTracks(UserInfoClass.allGenres);
 
-        PieChartView chartView = new PieChartView(genreData);
+        Map<String, Double> genreDataModified = genreData.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,            // Keep the keys as they are
+                        entry -> entry.getValue().doubleValue() // Convert Integer to Double
+                ));
+
+
+        PieChartView chartView = new PieChartView(genreDataModified);
 
 
         JFrame frame = new JFrame("Your Playlist: Decomposed by Spotilyze");
