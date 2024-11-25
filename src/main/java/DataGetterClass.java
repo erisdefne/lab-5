@@ -28,7 +28,6 @@ public class DataGetterClass {
         // Handle response
         int status = connection.getResponseCode();
         String message = connection.getResponseMessage();
-        System.out.println(message);
         if (status != HttpURLConnection.HTTP_OK) {
             throw new IOException("HTTP Error: " + status + " " + message);
         }

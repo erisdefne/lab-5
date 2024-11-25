@@ -54,9 +54,7 @@ public class UserInfoClass {
                     System.out.println("aaa");
                 }
             }
-            HashMap sorted = new HashMap();
-            sorted.putAll(genresMap);
-            System.out.println(sorted);
+            System.out.println(genresMap);
         } catch (IOException e) {
             e.printStackTrace();
         }
