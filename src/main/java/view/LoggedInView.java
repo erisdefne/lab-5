@@ -11,11 +11,15 @@ public class LoggedInView extends JPanel {
     private final String viewName = "logged in";
 
     public LoggedInView() {
-        JLabel message = new JLabel("Welcome to the Logged In View!");
-        message.setHorizontalAlignment(SwingConstants.CENTER);
+        setLayout(new GridLayout(3, 2, 10, 10)); // 3 rows, 2 columns with gaps
 
-        setLayout(new BorderLayout());
-        add(message, BorderLayout.CENTER);
+        // Add buttons
+        add(new JButton("TopSongs"));
+        add(new JButton("2"));
+        add(new JButton("3"));
+        add(new JButton("4"));
+        add(new JButton("5"));
+        add(new JButton("6"));
     }
 
     public String getViewName() {

@@ -15,8 +15,7 @@ public class MainTest {
 
         application.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         application.setLocationRelativeTo(null);
-        application.setSize(300, 200);
-        application.pack();
+
         application.setVisible(true);
     }
 }

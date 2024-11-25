@@ -2,11 +2,6 @@ package use_case.login;
 
 import interface_adapter.login.LoginPresenter2;
 
-import java.awt.*;
-import java.io.IOException;
-import java.net.URI;
-
-
 public class LoginInteractor2 {
 
     private static String accessToken = null;
@@ -19,12 +14,13 @@ public class LoginInteractor2 {
     public void execute(LoginInputData2 loginInputData2) {
         if (accessToken == null) {
             try {
-                String loginLink = LoginClass.getLoginLink();
-                Desktop.getDesktop().browse(URI.create(loginLink));
-                accessToken = LoginClass.getAccess_token();
+                LoginClass loginClass = new LoginClass();
+                while (accessToken == null || accessToken.isEmpty()) {
+                    Thread.sleep(500); // Poll every 500 milliseconds
+                    accessToken = loginClass.getAccess_token();
+                }
+
                 loginPresenter2.prepareSuccessView();
-            } catch (IOException ex) {
-                ex.printStackTrace();
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }

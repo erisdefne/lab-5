@@ -8,7 +8,6 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.URI;
 
-
 public class serverSetup {
 
     private static final int PORT = 3000;

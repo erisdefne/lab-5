@@ -1,7 +1,6 @@
 package use_case.login;
 
 import org.json.JSONObject;
-import use_case.login.serverSetup;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -12,8 +11,10 @@ import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-public class LoginClass{
+public class LoginClass {
 
     private static final String CLIENT_ID = "16b096a1941b433cbb6e44973a7fc00c"; // Replace with actual client ID
     private static final String REDIRECT_URI = "http://localhost:3000/callback"; // Replace with actual redirect URI
@@ -24,24 +25,29 @@ public class LoginClass{
     private static String codeVerifier;
     public static String access_token;
 
-    public static String getAccess_token(){
-        return access_token;
+    public LoginClass() {
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.submit(() -> {
+            try {
+                initializeLoginFlow();
+            } catch (Exception e) {
+                System.err.println("Error during login flow: " + e.getMessage());
+            } finally {
+                executorService.shutdown();
+            }
+        });
     }
 
-    public static void main(String[] args) throws Exception {
-        serverSetup.main(args);
-        if (getStoredToken("access_token") == null || isTokenExpired()) {
-            if (getStoredToken("refresh_token") != null) {
-                refreshToken();
-            } else {
-                redirectToSpotifyAuthorize();
-                while (getStoredToken("access_token") == null) {}
-                access_token = getStoredToken("access_token");
-            }
-        } else {
-            String accessToken = getStoredToken("access_token");
-            getUserData(accessToken);
+    private void initializeLoginFlow() throws Exception {
+        serverSetup.main(new String[]{}); // Start the server
+        redirectToSpotifyAuthorize();
+
+        while (getStoredToken("access_token") == null) {
+            Thread.sleep(500); // Wait until the token is retrieved
         }
+
+        access_token = getStoredToken("access_token");
+        System.out.println("Access Token Retrieved: " + access_token);
     }
 
     // Redirects user to Spotify authorization page
@@ -49,19 +55,25 @@ public class LoginClass{
         codeVerifier = generateCodeVerifier();
         String codeChallenge = generateCodeChallenge(codeVerifier);
 
-        // Construct authorization URL
         String authUrl = AUTHORIZATION_ENDPOINT + "?response_type=code"
                 + "&client_id=" + CLIENT_ID
-                + "&scope=" + SCOPE
-                + "&redirect_uri=" + REDIRECT_URI
+                + "&scope=" + URLEncoder.encode(SCOPE, "UTF-8")
+                + "&redirect_uri=" + URLEncoder.encode(REDIRECT_URI, "UTF-8")
                 + "&code_challenge_method=S256"
                 + "&code_challenge=" + codeChallenge;
 
-        // Store code verifier
         storeToken("code_verifier", codeVerifier);
 
-        // Redirect user (print URL for user to visit)
         System.out.println("Visit this URL to log in: " + authUrl);
+        openWebPage(authUrl);
+    }
+
+    private static void openWebPage(String urlString) {
+        try {
+            java.awt.Desktop.getDesktop().browse(new java.net.URI(urlString));
+        } catch (Exception e) {
+            System.err.println("Failed to open browser: " + e.getMessage());
+        }
     }
 
     // Gets token with the authorization code
@@ -83,7 +95,6 @@ public class LoginClass{
             os.write(params.getBytes(StandardCharsets.UTF_8));
         }
 
-        // Parse the response
         if (connection.getResponseCode() == 200) {
             BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             StringBuilder response = new StringBuilder();
@@ -94,72 +105,12 @@ public class LoginClass{
             in.close();
 
             JSONObject jsonResponse = new JSONObject(response.toString());
-            storeToken("access_token", jsonResponse.getString("access_token"));
-            storeToken("refresh_token", jsonResponse.optString("refresh_token", null));
-            System.out.println(jsonResponse.getString("access_token"));
-        }
-    }
+            access_token = jsonResponse.getString("access_token"); // Update the instance variable
+            storeToken("access_token", access_token); // Persist the access token
 
-    // Refreshes the access token using the refresh token
-    private static void refreshToken() throws Exception {
-        String refreshToken = getStoredToken("refresh_token");
-
-        String params = "client_id=" + CLIENT_ID
-                + "&grant_type=refresh_token"
-                + "&refresh_token=" + refreshToken;
-
-        HttpURLConnection connection = (HttpURLConnection) new URL(TOKEN_ENDPOINT).openConnection();
-        connection.setRequestMethod("POST");
-        connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-        connection.setDoOutput(true);
-
-        try (OutputStream os = connection.getOutputStream()) {
-            os.write(params.getBytes(StandardCharsets.UTF_8));
-        }
-
-        if (connection.getResponseCode() == 200) {
-            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            StringBuilder response = new StringBuilder();
-            String line;
-            while ((line = in.readLine()) != null) {
-                response.append(line);
-            }
-            in.close();
-
-            JSONObject jsonResponse = new JSONObject(response.toString());
-            storeToken("access_token", jsonResponse.getString("access_token"));
-
-            int expiresIn = jsonResponse.getInt("expires_in");
-            long expiryTime = System.currentTimeMillis() + (expiresIn * 1000);
-            storeToken("expires", String.valueOf(expiryTime));
-        }
-    }
-
-    // Checks if the token is expired
-    private static boolean isTokenExpired() {
-        String expiryTimeStr = getStoredToken("expires");
-        if (expiryTimeStr == null) return true;
-
-        long expiryTime = Long.parseLong(expiryTimeStr);
-        return System.currentTimeMillis() >= expiryTime;
-    }
-
-    // Fetches user data using the access token
-    private static void getUserData(String accessToken) throws Exception {
-        HttpURLConnection connection = (HttpURLConnection) new URL("https://api.spotify.com/v1/me").openConnection();
-        connection.setRequestMethod("GET");
-        connection.setRequestProperty("Authorization", "Bearer " + accessToken);
-
-        if (connection.getResponseCode() == 200) {
-            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            StringBuilder response = new StringBuilder();
-            String line;
-            while ((line = in.readLine()) != null) {
-                response.append(line);
-            }
-            in.close();
-
-            System.out.println("User Data: " + response.toString());
+            System.out.println("Access Token Retrieved: " + access_token);
+        } else {
+            System.err.println("Failed to retrieve access token. Response Code: " + connection.getResponseCode());
         }
     }
 
@@ -178,7 +129,7 @@ public class LoginClass{
         return Base64.getUrlEncoder().withoutPadding().encodeToString(hash);
     }
 
-    // Stores token data in a properties file (as a substitute for localStorage)
+    // Stores token data in a properties file
     private static void storeToken(String key, String value) {
         try (FileOutputStream fos = new FileOutputStream("tokens.properties")) {
             Properties props = new Properties();
@@ -200,22 +151,7 @@ public class LoginClass{
         }
     }
 
-    public static String getLoginLink() throws Exception {
-        // Generate a new code verifier
-        codeVerifier = generateCodeVerifier();
-        String codeChallenge = generateCodeChallenge(codeVerifier);
-
-        // Construct the authorization URL
-        String authUrl = AUTHORIZATION_ENDPOINT + "?response_type=code"
-                + "&client_id=" + CLIENT_ID
-                + "&scope=" + URLEncoder.encode(SCOPE, "UTF-8")
-                + "&redirect_uri=" + URLEncoder.encode(REDIRECT_URI, "UTF-8")
-                + "&code_challenge_method=S256"
-                + "&code_challenge=" + codeChallenge;
-
-        // Store code verifier for later use in token exchange
-        storeToken("code_verifier", codeVerifier);
-
-        return authUrl; // Return the constructed URL
+    public static String getAccess_token() {
+        return access_token;
     }
 }

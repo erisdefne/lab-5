@@ -53,9 +53,11 @@ public class AppBuilder2 {
     public JFrame build() {
         JFrame application = new JFrame("Login Application");
         application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        application.setSize(300, 200);
         application.add(cardPanel);
         cardLayout.show(cardPanel, loginView2.getViewName());
+
+
+        application.setSize(300, 200);
         return application;
     }
 }
