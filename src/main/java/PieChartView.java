@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -91,9 +92,9 @@ public class PieChartView extends JPanel {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         UserInfoClass userInfoClass = new UserInfoClass();
-        Map<String, Integer> genreData = userInfoClass.organizeTracks(UserInfoClass.allGenres);
+        Map<String, Integer> genreData = userInfoClass.getTopTrackGenres("medium_term", "50");
 
         Map<String, Double> genreDataModified = genreData.entrySet().stream()
                 .collect(Collectors.toMap(
