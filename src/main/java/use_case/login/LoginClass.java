@@ -152,6 +152,7 @@ public class LoginClass {
     }
 
     public static String getAccess_token() {
+        System.out.println("We did it!  " + access_token);
         return access_token;
     }
 }
