@@ -68,6 +68,7 @@ public class UserInfoClass {
         add("edm");
         add("trap");
         add("disco");
+        add("rock");
     }};
 
 
