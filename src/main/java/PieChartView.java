@@ -53,8 +53,7 @@ public class PieChartView extends JPanel {
         int centerXChart = panelWidth / 2; // Exact X center
         int centerYChart = panelHeight / 2; // Exact Y center
 
-        // Set font to Broadway with a fallback to Arial if unavailable
-        Font broadwayFont = new Font("Broadway", Font.BOLD, 20);
+        Font broadwayFont = new Font("Arial", Font.BOLD, 20);
         g2d.setFont(broadwayFont);
         FontMetrics metrics = g2d.getFontMetrics();
 
