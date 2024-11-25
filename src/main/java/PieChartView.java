@@ -94,7 +94,9 @@ public class PieChartView extends JPanel {
         UserInfoClass userInfoClass = new UserInfoClass();
         Map<String, Integer> genreData = userInfoClass.organizeTracks(UserInfoClass.allGenres);
 
+        // Convert Map<String, Integer> to Map<String, Double>, filtering out entries with value 0
         Map<String, Double> genreDataModified = genreData.entrySet().stream()
+                .filter(entry -> entry.getValue() > 0) // Exclude entries where the value is 0
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,            // Keep the keys as they are
                         entry -> entry.getValue().doubleValue() // Convert Integer to Double
