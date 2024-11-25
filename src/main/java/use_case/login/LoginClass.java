@@ -19,7 +19,7 @@ public class LoginClass{
     private static final String REDIRECT_URI = "http://localhost:3000/callback"; // Replace with actual redirect URI
     private static final String AUTHORIZATION_ENDPOINT = "https://accounts.spotify.com/authorize";
     private static final String TOKEN_ENDPOINT = "https://accounts.spotify.com/api/token";
-    private static final String SCOPE = "user-read-private user-read-email";
+    private static final String SCOPE = "user-read-private user-read-email user-top-read";
 
     private static String codeVerifier;
     public static String access_token;

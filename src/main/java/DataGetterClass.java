@@ -12,7 +12,8 @@ public class DataGetterClass {
 
     public static JsonNode getData(String queryUrl) throws IOException {
         // Construct the query URL
-        String token = "BQAEPoEZmn8kMUZQD6pv4_qwZql5qfI4PBCimyvX1l6PGs5Fmd_CScE_4Xzl2psUvjeC2UgJNyuzrheqDLPWaBf1zOsP-v2e6nniGbMzz2paJ7g1RLrBrfkS5diCcf1E3T2-Pv-wU5OJ0AfA-pjg1brGAky-G0DwijbgDshxVTFY8C6Rm_6_GZPyoIo2ldbRXStHGK0H5FMpWg1WNWE1__14sPSEPedkR4I";
+        String token = "BQAITkEjQdTAF20SCugWcxazp65H_ZowqBBiwX_GVGdKuMY4A5radMx7z6MRAqAF4QICsG4ddpcGCVP7V_LiSIZOnAb-rzuNkCqYu8DjIhlhitLYNe4qwmo0YeuvGLO-ZgEUvD-lMhO_VQo95V3JqKO5WytuoWui7mZyYgADajNXSdSy6oSz97QJxur9qoP0RdJRoFS8OaSKjp-FnDiBUfK0fsT194JmcTg";
+
 
         //LoginClass.getAccess_token();
         //String queryUrl = SEARCH_URL + userName (for getting user info)
