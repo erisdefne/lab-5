@@ -2,18 +2,19 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class UserInfoClass {
     private static final String Url = "https://api.spotify.com/v1/me/top/tracks?";
 
-    public static void getTopTrackGenres(String timerange, String limit) throws IOException {
+    public static List getTopTrackGenres(String timerange, String limit) throws IOException {
         // Construct the query URL
         JsonNode data = DataGetterClass.getData(Url + "time_range=" + timerange + "&limit=" + limit + "&offset=0");
         List artistIdsList = getArtistIds(data);
         List artistGenre = getArtistGenre(artistIdsList);
         System.out.println(artistGenre);
-
+        return artistGenre;
     }
 
     public static List getArtistIds(JsonNode data) {
@@ -42,8 +43,18 @@ public class UserInfoClass {
 
     public static void main(String[] args) {
         try { // Replace with actual token from getToken()
-            getTopTrackGenres("short_term", "50");
-
+            List genresList = getTopTrackGenres("short_term", "50");
+            HashMap genresMap = new HashMap();
+            for (int i = 0; i < genresList.size(); i++) {
+                if (genresMap.get(genresList.get(i)) == null) {
+                    genresMap.put(genresList.get(i), 1);
+                }
+                else {
+                    genresMap.replace(genresList.get(i),(int) genresMap.get(genresList.get(i)) + 1);
+                    System.out.println("aaa");
+                }
+            }
+            System.out.println(genresMap);
         } catch (IOException e) {
             e.printStackTrace();
         }
