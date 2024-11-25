@@ -101,8 +101,6 @@ public class PieChartView extends JPanel {
                         Map.Entry::getKey,            // Keep the keys as they are
                         entry -> entry.getValue().doubleValue() // Convert Integer to Double
                 ));
-
-
         PieChartView chartView = new PieChartView(genreDataModified);
 
 
