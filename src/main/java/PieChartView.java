@@ -12,7 +12,7 @@ public class PieChartView extends JPanel {
             new Color(255, 97, 110),
             new Color(165, 243, 165), // Light Green
             new Color(88, 192, 221), // Light Blue
-            new Color(194, 100, 244, 255), // Light Pink
+            new Color(194, 100, 244), // Light Pink
             new Color(237, 224, 123), // Light Yellow
             new Color(211, 150, 255), // Navajo White
             new Color(255, 182, 193), // Light Pink
@@ -54,8 +54,7 @@ public class PieChartView extends JPanel {
         int centerXChart = panelWidth / 2; // Exact X center
         int centerYChart = panelHeight / 2; // Exact Y center
 
-        // Set font to Broadway with a fallback to Arial if unavailable
-        Font broadwayFont = new Font("Broadway", Font.BOLD, 20);
+        Font broadwayFont = new Font("Arial", Font.BOLD, 20);
         g2d.setFont(broadwayFont);
         FontMetrics metrics = g2d.getFontMetrics();
 
@@ -96,7 +95,9 @@ public class PieChartView extends JPanel {
         UserInfoClass userInfoClass = new UserInfoClass();
         Map<String, Integer> genreData = userInfoClass.getTopTrackGenres("medium_term", "50");
 
+        // Convert Map<String, Integer> to Map<String, Double>, filtering out entries with value 0
         Map<String, Double> genreDataModified = genreData.entrySet().stream()
+                .filter(entry -> entry.getValue() > 0) // Exclude entries where the value is 0
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,            // Keep the keys as they are
                         entry -> entry.getValue().doubleValue() // Convert Integer to Double
