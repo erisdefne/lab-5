@@ -44,8 +44,6 @@ public class UserInfoClass {
                 }
             }
         }
-        System.out.println("This is the first genresList");
-        System.out.println(genresList);
         return genresList;
     }
 
@@ -66,9 +64,10 @@ public class UserInfoClass {
         add("classical");
         add("jazz");
         add("edm");
-        add("trap");
         add("disco");
         add("rock");
+        add("soul");
+        add("grunge");
     }};
 
 
@@ -77,8 +76,6 @@ public class UserInfoClass {
     public static Map<String, Integer> organizeTracks(List<String> genresList) {
         // Temporary map to hold updates
         Map<String, Integer> genreCounts = new HashMap<>();
-        System.out.println("This is the second genresList");
-        System.out.println(genresList);
 
         for (String genericGenre : allGenres) {
             genreCounts.put(genericGenre, 0);
@@ -98,7 +95,6 @@ public class UserInfoClass {
         }
 
         // Apply updates after iteration
-        System.out.println(genreCounts);
         return genreCounts;
     }
 
