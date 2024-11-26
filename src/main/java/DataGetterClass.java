@@ -12,7 +12,7 @@ public class DataGetterClass {
 
     public static JsonNode getData(String queryUrl) throws IOException {
         // Construct the query URL
-        String token = "BQAITkEjQdTAF20SCugWcxazp65H_ZowqBBiwX_GVGdKuMY4A5radMx7z6MRAqAF4QICsG4ddpcGCVP7V_LiSIZOnAb-rzuNkCqYu8DjIhlhitLYNe4qwmo0YeuvGLO-ZgEUvD-lMhO_VQo95V3JqKO5WytuoWui7mZyYgADajNXSdSy6oSz97QJxur9qoP0RdJRoFS8OaSKjp-FnDiBUfK0fsT194JmcTg";
+        String token = "BQDhqtw6K5lv59Gg4EIhX3ZjaS2uYJBnzjnu7ThnoM4Yzmqoh9KFzY3pM_181R2MhOWeHzO9A-JV67BUhmc83LzZVKDWLUPG_t7G-GrEoe8TYfyWzQazGsO1v7oCZXPvTfr49qo0Ewr1fTLw_0bq37KLe9xRsfi2clkZm_At5xlR5DAIYb9A-OUpzI8UYWu38apu04BD8TGl79ALeMBewF0v74yOpIK2HlA";
 
 
         //LoginClass.getAccess_token();
