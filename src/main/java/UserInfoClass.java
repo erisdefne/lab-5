@@ -12,13 +12,12 @@ public class UserInfoClass {
     // Makes an api call to Spotify to get the user's top tracks over the past certain period and
     //@param timerange takes the time of how long in the past you want data for. limit is how many tracks you want to see
     // returns genre of each artist of the tracks in the data returned from Spotify
-    public static List<String> getTopTrackGenres(String timerange, String limit) throws IOException {
+    public static Map<String, Integer> getTopTrackGenres(String timerange, String limit) throws IOException {
         // Construct the query URL
         JsonNode data = DataGetterClass.getData(Url + "time_range=" + timerange + "&limit=" + limit + "&offset=0");
         List artistIdsList = getArtistIds(data);
         List artistGenre = getArtistGenre(artistIdsList);
-        System.out.println(artistGenre);
-        return artistGenre;
+        return organizeTracks(artistGenre);
     }
 
     // return the artist ids list
@@ -55,7 +54,7 @@ public class UserInfoClass {
         add("r&b");
         add("hip hop");
         add("indie");
-        add("singer");
+        add("singer-songwriter");
         add("metal");
         add("house");
         add("techno");
@@ -65,8 +64,10 @@ public class UserInfoClass {
         add("classical");
         add("jazz");
         add("edm");
-        add("trap");
         add("disco");
+        add("rock");
+        add("soul");
+        add("grunge");
     }};
 
 

@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -53,7 +55,7 @@ public class PieChartView extends JPanel {
         int centerXChart = panelWidth / 2; // Exact X center
         int centerYChart = panelHeight / 2; // Exact Y center
 
-        Font broadwayFont = new Font("Arial", Font.BOLD, 20);
+        Font broadwayFont = new Font("Arial", Font.BOLD, 10);
         g2d.setFont(broadwayFont);
         FontMetrics metrics = g2d.getFontMetrics();
 
@@ -76,13 +78,24 @@ public class PieChartView extends JPanel {
             double radians = Math.toRadians(midAngle);
             int labelX = centerXChart + (int) (Math.cos(radians) * labelRadius);
             int labelY = centerYChart - (int) (Math.sin(radians) * labelRadius);
+            AffineTransform originalTransform = g2d.getTransform(); // Translate to label position
+            g2d.translate(labelX, labelY); // Rotate to match slice direction
+            double rotationAngle = -radians; // Default rotation
+            if (midAngle >= 90 && midAngle <= 270) {
+                rotationAngle += Math.PI; // Add 180° (π radians) for labels on the left half
+            }
+            g2d.rotate(rotationAngle); // Adjust rotation direction if needed
 
             // Draw the label centered within the slice
             String label = entry.getKey();
             int textWidth = metrics.stringWidth(label);
             int textHeight = metrics.getHeight();
             g2d.setColor(Color.BLACK); // Text color
-            g2d.drawString(label, labelX - textWidth / 2, labelY + textHeight / 4);
+            //g2d.drawString(label, labelX - textWidth / 2, labelY + textHeight / 4);
+
+            g2d.drawString(label, 0, 0);
+            // Reset transformation to avoid affecting subsequent drawings
+            g2d.setTransform(originalTransform);
 
             // Increment for the next slice
             startAngle += (int) Math.round(percentage);
@@ -90,9 +103,9 @@ public class PieChartView extends JPanel {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         UserInfoClass userInfoClass = new UserInfoClass();
-        Map<String, Integer> genreData = userInfoClass.organizeTracks(UserInfoClass.allGenres);
+        Map<String, Integer> genreData = userInfoClass.getTopTrackGenres("medium_term", "50");
 
         // Convert Map<String, Integer> to Map<String, Double>, filtering out entries with value 0
         Map<String, Double> genreDataModified = genreData.entrySet().stream()
