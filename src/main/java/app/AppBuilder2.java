@@ -2,6 +2,8 @@ package app;
 
 import javax.swing.*;
 import java.awt.*;
+
+import entity.CurrentUser;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.login.LoginController2;
 import interface_adapter.login.LoginPresenter2;
@@ -18,6 +20,7 @@ public class AppBuilder2 {
     private LoginViewModel2 loginViewModel2;
     private LoginView2 loginView2;
     private LoggedInView loggedInView;
+    private final CurrentUser currentUser = new CurrentUser();
 
     public AppBuilder2() {
         cardPanel.setLayout(cardLayout);
@@ -37,7 +40,7 @@ public class AppBuilder2 {
     }
     public AppBuilder2 addLoginUseCase() {
         LoginPresenter2 loginPresenter2 = new LoginPresenter2(viewManagerModel);
-        LoginInteractor2 loginInteractor2 = new LoginInteractor2(loginPresenter2);
+        LoginInteractor2 loginInteractor2 = new LoginInteractor2(loginPresenter2, currentUser);
         LoginController2 loginController2 = new LoginController2(loginInteractor2);
         loginView2.setLoginController(loginController2);
 

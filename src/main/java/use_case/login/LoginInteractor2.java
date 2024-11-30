@@ -1,14 +1,17 @@
 package use_case.login;
 
+import entity.CurrentUser;
 import interface_adapter.login.LoginPresenter2;
 
 public class LoginInteractor2 {
 
     private static String accessToken = null;
     private final LoginPresenter2 loginPresenter2;
+    private final CurrentUser currentUser;
 
-    public LoginInteractor2(LoginPresenter2 loginPresenter2) {
+    public LoginInteractor2(LoginPresenter2 loginPresenter2, CurrentUser currentUser) {
         this.loginPresenter2 = loginPresenter2;
+        this.currentUser = currentUser;
     }
 
     public void execute(LoginInputData2 loginInputData2) {
@@ -18,7 +21,10 @@ public class LoginInteractor2 {
                 while (accessToken == null || accessToken.isEmpty()) {
                     Thread.sleep(500); // Poll every 500 milliseconds
                     accessToken = loginClass.getAccess_token();
+
                 }
+
+                currentUser.setAccessToken(accessToken);
 
                 loginPresenter2.prepareSuccessView();
             } catch (Exception ex) {
