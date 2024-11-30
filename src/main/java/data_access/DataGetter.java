@@ -14,6 +14,7 @@ import java.net.URL;
  */
 public class DataGetter {
 
+    public static String Token = use_case.login.LoginClass.getAccess_token();
     /**
      * Makes a GET request to the given URL and parses the response as a JsonNode.
      *

@@ -7,6 +7,7 @@ import java.util.List;
 
 import data_access.DataGetter;
 
+
 /**
  * Use case class for fetching the user's top artists.
  */

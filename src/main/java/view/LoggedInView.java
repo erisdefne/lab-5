@@ -39,7 +39,6 @@ public class LoggedInView extends JPanel {
         add(topArtistsButton);
         // Add additional placeholder buttons
         add(new JButton("TopSongs"));
-        add(new JButton("2"));
         add(new JButton("3"));
         add(new JButton("4"));
         add(new JButton("5"));

@@ -40,6 +40,13 @@ public class AppBuilder2 {
     }
 
     public AppBuilder2 addLoggedInView() {
+        if (topArtistsController == null) {
+            System.out.println("Warning: TopArtistsController is null in addLoggedInView!");
+        }
+        if (topArtistsPresenter == null) {
+            System.out.println("Warning: TopArtistsPresenter is null in addLoggedInView!");
+        }
+
         loggedInView = new LoggedInView();
         loggedInView.setTopArtistsController(topArtistsController); // Wire the controller
         loggedInView.setTopArtistsPresenter(topArtistsPresenter);   // Wire the presenter
