@@ -1,9 +1,9 @@
 package entity;
 
 public class CurrentUser {
-    private String accessToken;
+    private static String accessToken;
 
-    public String getAccessToken() {
+    public static String getAccessToken() {
         return accessToken;
     }
 
