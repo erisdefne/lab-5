@@ -22,7 +22,7 @@ public class TopArtistsFetcher {
      * @return A list of artist names in ranked order.
      * @throws IOException If there is an issue fetching or parsing data.
      */
-    public List<String> getTopArtists(String timeRange, int limit, String token) throws IOException {
+    public static List<String> getTopArtists(String timeRange, int limit, String token) throws IOException {
         // Build the API URL with parameters
         String url = TOP_ARTISTS_URL + "?time_range=" + timeRange + "&limit=" + limit;
 
