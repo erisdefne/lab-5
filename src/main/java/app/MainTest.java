@@ -11,7 +11,7 @@ public class MainTest {
                 .addLoginView()
                 .addLoggedInView()
                 .addLoginUseCase()
-                .addSongRecommendUseCase("BQCRB4zB6Tqt2GouKfaYlrXhhEiT8sY7V_iI_4AlfuWITkdzWhPv3B7HvliqzJO2k41sompWCIIEBZ7wIi8gNNE4skdsPYAdQTBR0P2fT49QHRYDw9xbycJ585qR66s9b7RUgsfZb18LX1pbSQPmzbjlCTElwGsZvUJXCIMSUDKOzu-OyBgfpStIDO8HD_JHYMHdFDQBAY-41x7CKUVam0wNUaTLhBY4dUI5HPmtuoyBYg")
+                .addSongRecommendUseCase("BQByOEUh6cwcK6P96sT_wFdrMqMGqMH0CEXycNkXsyAKHeZxFSlo9UNt-urG-_iIGgX1yQpqozY22FS2AVoh7E4UND5ASOvbpzjcmnCAFspngnjhKyGAIdvy-3PSOJXs2s1dj5wwckor2NxTd5cZCIVK1mGJwcSR1t_0HeCuZx-ubxliwgYwLcc0pcxAk_EQhKzNW0GmGrVjSkMQm_Lds0vK3bl-Pqc22oBF4vwJcjcOuw")
                 .build();
 
         application.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

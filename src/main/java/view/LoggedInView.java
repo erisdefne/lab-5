@@ -29,7 +29,17 @@ public class LoggedInView extends JPanel {
         JButton recommendSongsButton = new JButton("Recommend Songs");
         recommendSongsButton.addActionListener(e -> {
             if (songRecommendController != null) {
-                String topGenre = "rap";
+                String topGenre = null;
+                Map<String, Integer> topTracks;
+                try {
+                    topTracks = DataGateway.getTopTrackGenres("short_term", "20");
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+                Iterator<String> iterator = topTracks.keySet().iterator();
+                if (iterator.hasNext()) {
+                    topGenre = iterator.next();
+                }
                 java.util.List<String> userTopTracks; // Explicitly use java.util.List
                 try {
                     userTopTracks = DataGateway.fetchUserTopTracks();
