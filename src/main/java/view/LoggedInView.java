@@ -28,6 +28,7 @@ public class LoggedInView extends JPanel {
         add(genreDistribution);
         topSongsButton = new JButton("TopSongs");
         add(topSongsButton);
+
         // Add "Top Artists" button
         JButton topArtistsButton = new JButton("Top Artists");
         topArtistsButton.addActionListener(new ActionListener() {
