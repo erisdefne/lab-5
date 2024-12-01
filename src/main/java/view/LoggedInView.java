@@ -3,6 +3,8 @@ package view;
 import data_access.DataGateway;
 import interface_adapter.song_recommend.SongRecommendController;
 import interface_adapter.song_recommend.SongRecommendPresenter;
+import interface_adapter.song_recommend.SongRecommendState;
+import interface_adapter.song_recommend.SongRecommendViewModel;
 
 
 import javax.swing.*;
@@ -27,30 +29,23 @@ public class LoggedInView extends JPanel {
         JButton recommendSongsButton = new JButton("Recommend Songs");
         recommendSongsButton.addActionListener(e -> {
             if (songRecommendController != null) {
-                // Example data
                 String topGenre = "rap";
-//                Map<String, Integer> topTracks;
-//                {
-//                    try {
-//                        topTracks = UserInfoClass.getTopTrackGenres("medium_term", "20");
-//                    } catch (IOException err) {
-//                        throw new RuntimeException(err);
-//                    }
-//                    System.out.println(topTracks);
-//                    Iterator<String> iterator = topTracks.keySet().iterator();
-//                    if (iterator.hasNext()) {
-//                        topGenre = iterator.next();
-//                    }
-//                }
-                List userTopTracks = null;
+                java.util.List<String> userTopTracks; // Explicitly use java.util.List
                 try {
-                    userTopTracks = (List) DataGateway.fetchUserTopTracks();
+                    userTopTracks = DataGateway.fetchUserTopTracks();
                 } catch (IOException ex) {
-                    throw new RuntimeException(ex);
+                    ex.printStackTrace(); // Print the exception for debugging
+                    JOptionPane.showMessageDialog(this, "Error fetching user top tracks: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
                 }
 
-                songRecommendController.fetchRecommendSongs(topGenre, (java.util.List<String>) userTopTracks);
-                SwingUtilities.invokeLater(() -> displayRecommendedSongs());
+                System.out.println("Top Genre: " + topGenre); // Debug
+                System.out.println("User Top Tracks: " + userTopTracks); // Debug
+
+                songRecommendController.fetchRecommendSongs(topGenre, userTopTracks);
+                SwingUtilities.invokeLater(this::displayRecommendedSongs);
+            } else {
+                System.out.println("SongRecommendController is null!"); // Debug
             }
         });
         add(recommendSongsButton);
@@ -64,11 +59,13 @@ public class LoggedInView extends JPanel {
     }
     private void displayRecommendedSongs() {
         if (songRecommendPresenter != null) {
-            String errorMessage = songRecommendPresenter.getErrorMessage();
+            SongRecommendState viewModel = SongRecommendViewModel.getState();
+            String errorMessage = viewModel.getErrorMessage();
+
             if (errorMessage != null) {
                 JOptionPane.showMessageDialog(this, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
             } else {
-                Map<String, String> songs = songRecommendPresenter.getRecommendedSongs();
+                Map<String, String> songs = viewModel.getRecommendedSongs();
                 if (songs != null && !songs.isEmpty()) {
                     StringBuilder message = new StringBuilder("Recommended Songs:\n");
                     songs.forEach((track, artist) -> message.append(track).append(" by ").append(artist).append("\n"));

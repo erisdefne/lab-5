@@ -8,6 +8,7 @@ import interface_adapter.song_recommend.SongRecommendController;
 import interface_adapter.song_recommend.SongRecommendPresenter;
 import interface_adapter.login.LoginPresenter2;
 import interface_adapter.login.LoginViewModel2;
+import interface_adapter.song_recommend.SongRecommendViewModel;
 import use_case.login.LoginInteractor2;
 import use_case.song_recommend.SongRecommendInteractor;
 import view.LoginView2;
@@ -23,6 +24,7 @@ public class AppBuilder2 {
     private LoggedInView loggedInView;
     private SongRecommendController songRecommendController;
     private SongRecommendPresenter songRecommendPresenter;
+    private SongRecommendViewModel songRecommendViewModel;
 
     public AppBuilder2() {
         cardPanel.setLayout(cardLayout);
@@ -56,10 +58,14 @@ public class AppBuilder2 {
 
         return this;
     }
-    public AppBuilder2 addSongRecommendUseCase() {
-        songRecommendPresenter = new SongRecommendPresenter();
-        SongRecommendInteractor interactor = new SongRecommendInteractor(songRecommendPresenter);
-        songRecommendController = new SongRecommendController(interactor);
+    public AppBuilder2 addSongRecommendUseCase(String token) {
+        SongRecommendViewModel viewModel = new SongRecommendViewModel();
+        SongRecommendPresenter presenter = new SongRecommendPresenter(viewManagerModel, viewModel);
+        SongRecommendInteractor interactor = new SongRecommendInteractor(presenter);
+        SongRecommendController controller = new SongRecommendController(interactor);
+
+        loggedInView.setSongRecommendController(controller);
+        loggedInView.setSongRecommendPresenter(presenter);
         return this;
     }
 

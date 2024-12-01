@@ -14,7 +14,7 @@ public class DataGetterClass {
 
     public static JsonNode getData(String queryUrl) throws IOException {
         // Construct the query URL
-        String token = "BQC13SR3mLu2Ei6HXo2L15t8Ow47EkOUxR4CK-XSmOo3fL-psYVdCYh8ZosDKvybsm8E3aacabIKRQed4RbLjbNV7FVclprISYyEndyxFdk99f1yp6qMr6qS7Z2UL-09HRlTj-9G_OLBgjBEf_eiY9WMBWCjQaJ71qc9zvYCOZVEDmL6WXUxz2kFt3KGwIjJKcb_c8ZpFNbACR3nD-sbgSliWRbACx-QF3F7rFKmV6iYiw";
+        String Token = "BQCRB4zB6Tqt2GouKfaYlrXhhEiT8sY7V_iI_4AlfuWITkdzWhPv3B7HvliqzJO2k41sompWCIIEBZ7wIi8gNNE4skdsPYAdQTBR0P2fT49QHRYDw9xbycJ585qR66s9b7RUgsfZb18LX1pbSQPmzbjlCTElwGsZvUJXCIMSUDKOzu-OyBgfpStIDO8HD_JHYMHdFDQBAY-41x7CKUVam0wNUaTLhBY4dUI5HPmtuoyBYg";
 
 
         //LoginClass.getAccess_token();
@@ -26,7 +26,7 @@ public class DataGetterClass {
         URL url = new URL(queryUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
-        connection.setRequestProperty("Authorization", "Bearer " + token);
+        connection.setRequestProperty("Authorization", "Bearer " + Token);
 
         // Handle response
         int status = connection.getResponseCode();
