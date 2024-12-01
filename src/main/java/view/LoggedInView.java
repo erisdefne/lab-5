@@ -28,7 +28,7 @@ public class LoggedInView extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 if (topArtistsController != null) {
                     // Fetch top artists for the past year
-                    topArtistsController.fetchTopArtists("long_term", 10);
+                    topArtistsController.fetchTopArtists("long_term", 15);
 
                     // Display the results
                     SwingUtilities.invokeLater(() -> displayTopArtists());

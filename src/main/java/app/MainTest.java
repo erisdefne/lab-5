@@ -11,7 +11,7 @@ public class MainTest {
         JFrame application = appBuilder2
                 .addLoginView()
                 .addLoginUseCase()
-                .addTopArtistsUseCase("BQDwHiA7VgOPhHBEwmcBemzSGiFr4RuLx7oBWNC32g4JvHOhH2nXKgAWGMhXITxLZBZQIeC9tQ32tepdSaBgZlFn5oVBIpkPFs1ITsR9Lv09tXNfjAZp1hInxg1atKvGbBgV40DP8Jw-gLh-64voRUJz6i61_dc8-bMrHjTMz2azLT1deUtm2eKKaPrO5Dw4yRndI7rxeBnALKErJ8fCT-2jLIiyEnDhKcgJ6DkdQUGIIA")
+                .addTopArtistsUseCase("BQDxy-20NRosNfn9-PA7dEf5rfBaQrwkPTpi-kr0TlzmyfGy091XHjLthuqJPyUDkqRRvnTya089TR3sqEqJw5WhLuKbCG8WTc6aMXSL6R7UJllMdVQU97mO2YK2G1N_L3oSU5rqYMVBSeMC5vEZCnr28eONDLpl-lqupeT2PMvA_S8GkyQ7LT0MhD6-jNZhYbWWNx59dWoTscuZSy8VfwBCGzn1F9xau3lumDSc_BqlFg")
                 .addLoggedInView() // Initially add the logged-in view without Top Artists
                 .build();
 
