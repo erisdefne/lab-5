@@ -1,28 +1,22 @@
-//package app;
-//
-//import javax.swing.JFrame;
-//
-///**
-// * The Main class of our application.
-// */
-//public class Main {
-//    /**
-//     * Builds and runs the CA architecture of the application.
-//     * @param args unused arguments
-//     */
-//    public static void main(String[] args) {
-//        final AppBuilder appBuilder = new AppBuilder();
-//        final JFrame application = appBuilder
-//                                            .addLoginView()
-//                                            .addSignupView()
-//                                            .addLoggedInView()
-//                                            .addSignupUseCase()
-//                                            .addLoginUseCase()
-//                                            .addLogoutUseCase()
-//                                            .addChangePasswordUseCase()
-//                                            .build();
-//
-//        application.pack();
-//        application.setVisible(true);
-//    }
-//}
+package app;
+
+import javax.swing.*;
+
+public class Main {
+
+    public static void main(String[] args) {
+        AppBuilder2 appBuilder2 = new AppBuilder2();
+
+        JFrame application = appBuilder2
+                .addLoginView()
+                .addLoggedInView()
+                .addLoginUseCase()
+                .addTopSongsUseCase()
+                .build();
+
+        application.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        application.setLocationRelativeTo(null);
+
+        application.setVisible(true);
+    }
+}

@@ -8,9 +8,14 @@ import interface_adapter.ViewManagerModel;
 import interface_adapter.login.LoginController2;
 import interface_adapter.login.LoginPresenter2;
 import interface_adapter.login.LoginViewModel2;
+import interface_adapter.top_songs.TopSongsController;
+import interface_adapter.top_songs.TopSongsPresenter;
+import interface_adapter.top_songs.TopSongsViewModel;
 import use_case.login.LoginInteractor2;
+import use_case.topsongs.TopSongsInteractor;
 import view.LoginView2;
 import view.LoggedInView;
+import view.TopSongsView;
 
 public class AppBuilder2 {
 
@@ -53,6 +58,33 @@ public class AppBuilder2 {
         return this;
     }
 
+    public AppBuilder2 addTopSongsUseCase() {
+        TopSongsViewModel topSongsViewModel = new TopSongsViewModel();
+        TopSongsPresenter topSongsPresenter = new TopSongsPresenter(topSongsViewModel);
+        TopSongsInteractor topSongsInteractor = new TopSongsInteractor(topSongsPresenter);
+        TopSongsController topSongsController = new TopSongsController(topSongsInteractor);
+
+        TopSongsView topSongsView = new TopSongsView();
+
+        // Set up the action listener for the "TopSongs" button in LoggedInView
+        loggedInView.setTopSongsActionListener(e -> {
+            // Fetch the top songs
+            topSongsController.execute(currentUser);
+            // Update the view with the fetched data
+            topSongsView.updateView(topSongsViewModel);
+            // Display the TopSongsView
+            cardPanel.add(topSongsView, "topSongs");
+            cardLayout.show(cardPanel, "topSongs");
+        });
+
+        // Set up the "Go Back" button in TopSongsView
+        topSongsView.setGoBackButtonListener(e -> {
+            // Show the LoggedInView when "Go Back" is clicked
+            cardLayout.show(cardPanel, loggedInView.getViewName());
+        });
+
+        return this;
+    }
     public JFrame build() {
         JFrame application = new JFrame("Login Application");
         application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

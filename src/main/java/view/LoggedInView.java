@@ -1,10 +1,7 @@
 package view;
 
-import interface_adapter.top_songs.TopSongsController;
-
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
@@ -13,12 +10,12 @@ import java.awt.event.ActionListener;
 public class LoggedInView extends JPanel {
 
     private final String viewName = "logged in";
-    JButton topSongsButton;
+    private final JButton topSongsButton;
 
     public LoggedInView() {
         setLayout(new GridLayout(3, 2, 10, 10)); // 3 rows, 2 columns with gaps
 
-        // Add buttons
+        // Initialize and add buttons
         topSongsButton = new JButton("TopSongs");
         add(topSongsButton);
         add(new JButton("2"));
@@ -32,9 +29,11 @@ public class LoggedInView extends JPanel {
         return viewName;
     }
 
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == topSongsButton) {
-            TopSongsController.execute();
-        }
+    /**
+     * Sets the action listener for the "TopSongs" button.
+     * @param actionListener the ActionListener to handle button clicks
+     */
+    public void setTopSongsActionListener(ActionListener actionListener) {
+        topSongsButton.addActionListener(actionListener);
     }
 }
