@@ -2,6 +2,7 @@ package data_access;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import entity.CurrentUser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,9 +13,9 @@ import java.net.URL;
 public class DataGetterClass {
 
 
-    public static JsonNode getData(String queryUrl) throws IOException {
+    public static JsonNode getData(String queryUrl, CurrentUser currentUser) throws IOException {
         // Construct the query URL
-        String token = entity.CurrentUser.getAccessToken();
+        String token = currentUser.getAccessToken();
 
 
         //LoginClass.getAccess_token();

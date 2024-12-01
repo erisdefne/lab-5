@@ -1,7 +1,8 @@
 package use_case.top_artists;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import data_access.DataGetter;
+import data_access.DataGetterClass;
+import entity.CurrentUser;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,15 +12,14 @@ import java.util.List;
  * Interactor for the Top Artists use case.
  */
 public class TopArtistsInteractor implements TopArtistsInputBoundary {
-
     private static final String TOP_ARTISTS_URL = "https://api.spotify.com/v1/me/top/artists";
 
     private final TopArtistsOutputBoundary outputBoundary;
-    private final String token; // Inject token dynamically
+    private final CurrentUser currentUser; // Dependency for accessing the token
 
-    public TopArtistsInteractor(TopArtistsOutputBoundary outputBoundary, String token) {
+    public TopArtistsInteractor(TopArtistsOutputBoundary outputBoundary, CurrentUser currentUser) {
         this.outputBoundary = outputBoundary;
-        this.token = token;
+        this.currentUser = currentUser; // Pass CurrentUser to retrieve the token
     }
 
     @Override
@@ -28,8 +28,8 @@ public class TopArtistsInteractor implements TopArtistsInputBoundary {
             // Build the API URL
             String url = TOP_ARTISTS_URL + "?time_range=" + timeRange + "&limit=" + limit;
 
-            // Fetch data from Spotify API
-            JsonNode data = DataGetter.getData(url, token);
+            // Fetch data using DataGetterClass
+            JsonNode data = DataGetterClass.getData(url, currentUser);
 
             // Parse artist names
             List<String> topArtists = new ArrayList<>();
@@ -48,3 +48,4 @@ public class TopArtistsInteractor implements TopArtistsInputBoundary {
         }
     }
 }
+

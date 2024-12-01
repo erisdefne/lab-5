@@ -25,9 +25,6 @@ public class AppBuilder2 {
     private LoggedInView loggedInView;
     private final CurrentUser currentUser = new CurrentUser();
 
-    private TopArtistsController topArtistsController;
-    private TopArtistsPresenter topArtistsPresenter;
-
     public AppBuilder2() {
         cardPanel.setLayout(cardLayout);
     }
@@ -68,9 +65,12 @@ public class AppBuilder2 {
         return this;
     }
 
-    public AppBuilder2 addTopArtistsUseCase(String accessToken) {
+    private TopArtistsController topArtistsController;
+    private TopArtistsPresenter topArtistsPresenter;
+
+    public AppBuilder2 addTopArtistsUseCase() {
         topArtistsPresenter = new TopArtistsPresenter();
-        TopArtistsInteractor interactor = new TopArtistsInteractor(topArtistsPresenter, accessToken);
+        TopArtistsInteractor interactor = new TopArtistsInteractor(topArtistsPresenter, currentUser);
         topArtistsController = new TopArtistsController(interactor);
         return this;
     }
