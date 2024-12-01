@@ -5,9 +5,9 @@ import javax.swing.*;
 public class Main {
 
     public static void main(String[] args) {
-        AppBuilder2 appBuilder2 = new AppBuilder2();
+        final AppBuilder2 appBuilder2 = new AppBuilder2();
 
-        JFrame application = appBuilder2
+        final JFrame application = appBuilder2
                 .addLoginView()
                 .addLoggedInView()
                 .addLoginUseCase()
