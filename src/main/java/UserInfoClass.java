@@ -34,14 +34,24 @@ public class UserInfoClass {
 
     // returns the genre of all artists of the tracks in a user's top tracks
     public static List<String> getArtistGenre(List<String> trackIdsList) throws IOException {
-        String artist_url = "https://api.spotify.com/v1/artists/";
+        String artist_url = "https://api.spotify.com/v1/artists?ids=";
         List<String> genresList = new ArrayList<>();
-        for (int i = 0; i < trackIdsList.size(); i++) {
-            JsonNode data = DataGetterClass.getData(artist_url + trackIdsList.get(i));
-            for (int j = 0; j < data.get("genres").size(); j++) {
-                if (data.get("genres").get(j) != null) {
-                    genresList.add(data.get("genres").get(j).asText()); // Convert JsonNode to String
-                }
+        String idsString = "";
+        for (int i = 1; i < trackIdsList.size() + 1; i++) {
+            idsString = idsString + (trackIdsList.get(i-1)) + "%2C";
+            if (i%50 == 0 || i == trackIdsList.size() ) {
+                StringBuffer sb = new StringBuffer(idsString);
+                sb.delete(idsString.length() - 3, idsString.length());
+                String queryUrl = artist_url + sb.toString();
+                JsonNode data = DataGetterClass.getData(queryUrl).get("artists");
+                    for (int j = 0; j < data.size(); j++) {
+                        if (data.get(j).get("genres").size() != 0) {
+                            for (int k = 0; k < data.get(j).get("genres").size(); k++) {
+                                genresList.add(data.get(j).get("genres").get(k).asText()); // Convert JsonNode to String
+                            }
+                        }
+                    }
+                idsString = "";
             }
         }
         return genresList;
@@ -99,6 +109,15 @@ public class UserInfoClass {
     }
 
     //pop, rap, r&b, hip hop, indie, singer, metal, house, techno, country, punk, dance, classical, jazz, blues, disco, edm, trap
+
+    public static void main(String[] args) throws IOException {
+        try {
+            System.out.println(getTopTrackGenres("short_term", "50"));
+        } catch (IOException e) {
+           e.printStackTrace();
+        }
+    }
+
 //    public static void main(String[] args) {
 //        try { // Replace with actual token from getToken()
 //            List<String> genresList = getTopTrackGenres("short_term", "50");
