@@ -35,19 +35,19 @@ public class AppBuilder2 {
 
     public AppBuilder2 addTempoAnalyserUseCase() {
         // Initialize the fetcher
-        TempoAnalyserFetcher fetcher = new TempoAnalyserFetcher();
+        final TempoAnalyserFetcher fetcher = new TempoAnalyserFetcher();
 
         // Initialize the presenter
-        TempoAnalysisPresenter presenter = new TempoAnalysisPresenter();
+        final TempoAnalysisPresenter presenter = new TempoAnalysisPresenter();
 
         // Initialize the interactor
-        TempoAnalysisInteractor interactor = new TempoAnalysisInteractor(fetcher, presenter);
+        final TempoAnalysisInteractor interactor = new TempoAnalysisInteractor(fetcher, presenter);
 
         // Initialize the controller
-        TempoAnalysisController controller = new TempoAnalysisController(interactor);
+        final TempoAnalysisController controller = new TempoAnalysisController(interactor);
 
         // Create the TempoAnalysisView
-        TempoAnalysisView tempoAnalysisView = new TempoAnalysisView(controller, presenter);
+        final TempoAnalysisView tempoAnalysisView = new TempoAnalysisView(controller, presenter);
 
         // Add the TempoAnalysisView to the application card panel
         cardPanel.add(tempoAnalysisView, "tempoAnalysisView");

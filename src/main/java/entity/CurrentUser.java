@@ -4,7 +4,7 @@ public class CurrentUser {
     private static CurrentUser instance;
     private String accessToken;
 
-    private CurrentUser() {
+    public CurrentUser() {
         // Private constructor to prevent instantiation
     }
 
