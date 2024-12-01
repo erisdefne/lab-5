@@ -122,7 +122,7 @@ public class AppBuilder2 {
         cardLayout.show(cardPanel, loginView2.getViewName());
 
 
-        application.setSize(300, 200);
+        application.setSize(1200, 800);
         return application;
     }
 }

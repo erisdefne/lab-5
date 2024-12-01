@@ -61,12 +61,13 @@ public class GenreDistributionView extends JPanel {
         );
 
         ChartPanel chartPanel = new ChartPanel(chart);
-        removeAll();
-        add(chartPanel, BorderLayout.CENTER);
+
+        // Update only the center panel for the chart
+        remove(errorText); // Remove the error text area if it exists
+        add(chartPanel, BorderLayout.CENTER); // Add the new chart panel
         revalidate();
         repaint();
     }
-
 
     /**
      * Sets an ActionListener for the Go Back button.
