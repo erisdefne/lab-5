@@ -15,9 +15,12 @@ import interface_adapter.top_songs.TopSongsController;
 import interface_adapter.top_songs.TopSongsPresenter;
 import interface_adapter.top_songs.TopSongsViewModel;
 import use_case.genre_distribution.GenreDistributionInteractor;
+import interface_adapter.top_artists.TopArtistsController;
+import interface_adapter.top_artists.TopArtistsPresenter;
 import use_case.login.LoginInteractor2;
 import use_case.topsongs.TopSongsInteractor;
 import view.GenreDistributionView;
+import use_case.top_artists.TopArtistsInteractor;
 import view.LoginView2;
 import view.LoggedInView;
 import view.TopSongsView;
@@ -44,10 +47,20 @@ public class AppBuilder2 {
     }
 
     public AppBuilder2 addLoggedInView() {
+        if (topArtistsController == null) {
+            System.out.println("Warning: TopArtistsController is null in addLoggedInView!");
+        }
+        if (topArtistsPresenter == null) {
+            System.out.println("Warning: TopArtistsPresenter is null in addLoggedInView!");
+        }
+
         loggedInView = new LoggedInView();
+        loggedInView.setTopArtistsController(topArtistsController); // Wire the controller
+        loggedInView.setTopArtistsPresenter(topArtistsPresenter);   // Wire the presenter
         cardPanel.add(loggedInView, loggedInView.getViewName());
         return this;
     }
+
     public AppBuilder2 addLoginUseCase() {
         LoginPresenter2 loginPresenter2 = new LoginPresenter2(viewManagerModel);
         LoginInteractor2 loginInteractor2 = new LoginInteractor2(loginPresenter2, currentUser);
@@ -59,7 +72,16 @@ public class AppBuilder2 {
                 cardLayout.show(cardPanel, evt.getNewValue().toString());
             }
         });
+        return this;
+    }
 
+    private TopArtistsController topArtistsController;
+    private TopArtistsPresenter topArtistsPresenter;
+
+    public AppBuilder2 addTopArtistsUseCase() {
+        topArtistsPresenter = new TopArtistsPresenter();
+        TopArtistsInteractor interactor = new TopArtistsInteractor(topArtistsPresenter, currentUser);
+        topArtistsController = new TopArtistsController(interactor);
         return this;
     }
 
@@ -120,8 +142,6 @@ public class AppBuilder2 {
         application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         application.add(cardPanel);
         cardLayout.show(cardPanel, loginView2.getViewName());
-
-
         application.setSize(300, 200);
         return application;
     }
