@@ -25,14 +25,14 @@ public class TopArtistsFetcher {
      */
     public static List<String> getTopArtists(String timeRange, int limit, CurrentUser currentUser) throws IOException {
         // Build the API URL with parameters
-        String url = TOP_ARTISTS_URL + "?time_range=" + timeRange + "&limit=" + limit;
+        final String url = TOP_ARTISTS_URL + "?time_range=" + timeRange + "&limit=" + limit;
 
         // Fetch data from Spotify API using the new DataGetterClass
-        JsonNode data = DataGetterClass.getData(url, currentUser);
+        final JsonNode data = DataGetterClass.getData(url, currentUser);
 
         // Parse and rank the top artists
-        List<String> topArtists = new ArrayList<>();
-        JsonNode items = data.get("items");
+        final List<String> topArtists = new ArrayList<>();
+        final JsonNode items = data.get("items");
         if (items != null) {
             for (JsonNode artist : items) {
                 topArtists.add(artist.get("name").asText());
