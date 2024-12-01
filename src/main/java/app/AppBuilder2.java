@@ -9,6 +9,8 @@ import interface_adapter.genre_distribution.GenreDistributionController;
 import interface_adapter.genre_distribution.GenreDistributionPresenter;
 import interface_adapter.genre_distribution.GenreDistributionViewModel;
 import interface_adapter.login.LoginController2;
+import interface_adapter.song_recommend.SongRecommendController;
+import interface_adapter.song_recommend.SongRecommendPresenter;
 import interface_adapter.login.LoginPresenter2;
 import interface_adapter.login.LoginViewModel2;
 import interface_adapter.top_songs.TopSongsController;
@@ -17,10 +19,12 @@ import interface_adapter.top_songs.TopSongsViewModel;
 import use_case.genre_distribution.GenreDistributionInteractor;
 import interface_adapter.top_artists.TopArtistsController;
 import interface_adapter.top_artists.TopArtistsPresenter;
+import interface_adapter.song_recommend.SongRecommendViewModel;
 import use_case.login.LoginInteractor2;
 import use_case.topsongs.TopSongsInteractor;
 import view.GenreDistributionView;
 import use_case.top_artists.TopArtistsInteractor;
+import use_case.song_recommend.SongRecommendInteractor;
 import view.LoginView2;
 import view.LoggedInView;
 import view.TopSongsView;
@@ -34,6 +38,9 @@ public class AppBuilder2 {
     private LoginView2 loginView2;
     private LoggedInView loggedInView;
     private final CurrentUser currentUser = new CurrentUser();
+    private SongRecommendController songRecommendController;
+    private SongRecommendPresenter songRecommendPresenter;
+    private SongRecommendViewModel songRecommendViewModel;
 
     public AppBuilder2() {
         cardPanel.setLayout(cardLayout);
@@ -57,6 +64,8 @@ public class AppBuilder2 {
         loggedInView = new LoggedInView();
         loggedInView.setTopArtistsController(topArtistsController); // Wire the controller
         loggedInView.setTopArtistsPresenter(topArtistsPresenter);   // Wire the presenter
+        loggedInView.setSongRecommendController(songRecommendController); // Wire the controller
+        loggedInView.setSongRecommendPresenter(songRecommendPresenter);
         cardPanel.add(loggedInView, loggedInView.getViewName());
         return this;
     }
@@ -134,6 +143,16 @@ public class AppBuilder2 {
             cardLayout.show(cardPanel, loggedInView.getViewName());
         });
 
+        return this;
+    }
+    public AppBuilder2 addSongRecommendUseCase() {
+        SongRecommendViewModel viewModel = new SongRecommendViewModel();
+        SongRecommendPresenter presenter = new SongRecommendPresenter(viewManagerModel, viewModel);
+        SongRecommendInteractor interactor = new SongRecommendInteractor(presenter, currentUser);
+        SongRecommendController controller = new SongRecommendController(interactor);
+
+        loggedInView.setSongRecommendController(controller);
+        loggedInView.setSongRecommendPresenter(presenter);
         return this;
     }
 
