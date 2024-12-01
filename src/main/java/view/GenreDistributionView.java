@@ -8,10 +8,12 @@ import org.jfree.data.general.DefaultPieDataset;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.util.Map;
 
 public class GenreDistributionView extends JPanel {
     private final JTextArea errorText;
+    private final JButton goBackButton;
 
     public GenreDistributionView() {
         setLayout(new BorderLayout());
@@ -24,6 +26,12 @@ public class GenreDistributionView extends JPanel {
         errorText.setEditable(false);
         errorText.setForeground(Color.RED);
         add(new JScrollPane(errorText), BorderLayout.CENTER);
+
+        // Go Back button
+        goBackButton = new JButton("Go Back");
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        buttonPanel.add(goBackButton);
+        add(buttonPanel, BorderLayout.SOUTH);
     }
 
     public void updateView(GenreDistributionViewModel viewModel) {
@@ -57,5 +65,15 @@ public class GenreDistributionView extends JPanel {
         add(chartPanel, BorderLayout.CENTER);
         revalidate();
         repaint();
+    }
+
+
+    /**
+     * Sets an ActionListener for the Go Back button.
+     *
+     * @param listener The ActionListener to be called when the button is clicked.
+     */
+    public void setGoBackButtonListener(ActionListener listener) {
+        goBackButton.addActionListener(listener);
     }
 }

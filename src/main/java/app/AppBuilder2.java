@@ -106,6 +106,12 @@ public class AppBuilder2 {
             cardLayout.show(cardPanel, "genreDistribution");
         });
 
+        // Set up the "Go Back" button in TopSongsView
+        view.setGoBackButtonListener(e -> {
+            // Show the LoggedInView when "Go Back" is clicked
+            cardLayout.show(cardPanel, loggedInView.getViewName());
+        });
+
         return this;
     }
 
