@@ -157,11 +157,11 @@ public class AppBuilder2 {
     }
 
     public JFrame build() {
-        JFrame application = new JFrame("Login Application");
+        JFrame application = new JFrame("Spotilyze");
         application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         application.add(cardPanel);
         cardLayout.show(cardPanel, loginView2.getViewName());
-        application.setSize(300, 200);
+        application.setSize(1200, 800);
         return application;
     }
 }

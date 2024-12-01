@@ -94,11 +94,6 @@ public class LoggedInView extends JPanel {
             }
         });
         add(recommendSongsButton);
-        add(new JButton("TopSongs"));
-        add(new JButton("3"));
-        add(new JButton("4"));
-        add(new JButton("5"));
-        add(new JButton("6"));
         // Add buttons
     }
     private void displayRecommendedSongs() {

@@ -14,6 +14,7 @@ import java.util.Map;
 public class GenreDistributionView extends JPanel {
     private final JTextArea errorText;
     private final JButton goBackButton;
+    private final JPanel centerPanel; // Panel to hold the dynamic content (chart or error text)
 
     public GenreDistributionView() {
         setLayout(new BorderLayout());
@@ -22,10 +23,15 @@ public class GenreDistributionView extends JPanel {
         title.setFont(new Font("Arial", Font.BOLD, 16));
         add(title, BorderLayout.NORTH);
 
+        // Panel for dynamic content
+        centerPanel = new JPanel(new BorderLayout());
+        add(centerPanel, BorderLayout.CENTER);
+
+        // Error text
         errorText = new JTextArea();
         errorText.setEditable(false);
         errorText.setForeground(Color.RED);
-        add(new JScrollPane(errorText), BorderLayout.CENTER);
+        centerPanel.add(new JScrollPane(errorText), BorderLayout.CENTER);
 
         // Go Back button
         goBackButton = new JButton("Go Back");
@@ -35,38 +41,38 @@ public class GenreDistributionView extends JPanel {
     }
 
     public void updateView(GenreDistributionViewModel viewModel) {
+        centerPanel.removeAll(); // Clear previous content in the center panel
+
         if (viewModel.getError() != null) {
             errorText.setText("Error: " + viewModel.getError());
-            return;
+            centerPanel.add(new JScrollPane(errorText), BorderLayout.CENTER);
+        } else {
+            Map<String, Integer> genreData = viewModel.getGenreData();
+            if (genreData == null || genreData.isEmpty()) {
+                errorText.setText("No genres found.");
+                centerPanel.add(new JScrollPane(errorText), BorderLayout.CENTER);
+            } else {
+                // Generate a pie chart for genre distribution
+                DefaultPieDataset dataset = new DefaultPieDataset();
+                for (Map.Entry<String, Integer> entry : genreData.entrySet()) {
+                    dataset.setValue(entry.getKey(), entry.getValue());
+                }
+
+                JFreeChart chart = ChartFactory.createPieChart(
+                        "Genre Distribution",
+                        dataset,
+                        true,
+                        true,
+                        false
+                );
+
+                ChartPanel chartPanel = new ChartPanel(chart);
+                centerPanel.add(chartPanel, BorderLayout.CENTER);
+            }
         }
 
-        Map<String, Integer> genreData = viewModel.getGenreData();
-        if (genreData == null || genreData.isEmpty()) {
-            errorText.setText("No genres found.");
-            return;
-        }
-
-        // Generate a pie chart for genre distribution
-        DefaultPieDataset dataset = new DefaultPieDataset();
-        for (Map.Entry<String, Integer> entry : genreData.entrySet()) {
-            dataset.setValue(entry.getKey(), entry.getValue());
-        }
-
-        JFreeChart chart = ChartFactory.createPieChart(
-                "Genre Distribution",
-                dataset,
-                true,
-                true,
-                false
-        );
-
-        ChartPanel chartPanel = new ChartPanel(chart);
-
-        // Update only the center panel for the chart
-        remove(errorText); // Remove the error text area if it exists
-        add(chartPanel, BorderLayout.CENTER); // Add the new chart panel
-        revalidate();
-        repaint();
+        centerPanel.revalidate();
+        centerPanel.repaint();
     }
 
     /**
