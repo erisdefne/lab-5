@@ -54,20 +54,31 @@ public class LoggedInView extends JPanel {
             } else {
                 List<String> topArtists = topArtistsPresenter.getTopArtists();
                 if (topArtists != null && !topArtists.isEmpty()) {
-                    // Format the list of top artists
-                    StringBuilder message = new StringBuilder("Your Top Artists:\n");
+                    // Enhanced formatting and display
+                    StringBuilder message = new StringBuilder("<html><body style='background-color: #d4f0f8; font-size: 16px;'>");
+                    message.append("<h2 style='text-align: left;'>Spotilyze Results: Your Top Artists Ranked by Play Count</h2>");
+                    message.append("<ol style='text-align: left; padding-left: 20px;'>");
                     for (int i = 0; i < topArtists.size(); i++) {
-                        message.append(i + 1).append(". ").append(topArtists.get(i)).append("\n");
+                        message.append("<li>").append(topArtists.get(i)).append("</li>");
                     }
+                    message.append("</ol></body></html>");
 
-                    // Display in a dialog
-                    JOptionPane.showMessageDialog(this, message.toString(), "Top Artists", JOptionPane.INFORMATION_MESSAGE);
+                    JLabel label = new JLabel(message.toString());
+                    label.setOpaque(true);
+                    label.setBackground(new java.awt.Color(212, 240, 248));
+                    label.setPreferredSize(new java.awt.Dimension(1000, 500));
+                    label.setHorizontalAlignment(JLabel.LEFT);
+
+                    // Display the JLabel in a JOptionPane
+                    JOptionPane.showMessageDialog(this, label, "Spotilyze: Top Artists", JOptionPane.INFORMATION_MESSAGE);
                 } else {
-                    JOptionPane.showMessageDialog(this, "No top artists found.", "Top Artists", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "No top artists found.", "Spotilyze: Top Artists", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         }
     }
+
+
 
     public String getViewName() {
         return viewName;
