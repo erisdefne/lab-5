@@ -9,6 +9,6 @@ public class CurrentUser {
     }
 
     public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
+        CurrentUser.accessToken = accessToken;
     }
 }
