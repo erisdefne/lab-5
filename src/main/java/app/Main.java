@@ -12,6 +12,7 @@ public class Main {
                 .addLoggedInView()
                 .addLoginUseCase()
                 .addTopSongsUseCase()
+                .addGenreDistributionUseCase()
                 .build();
 
         application.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

@@ -5,14 +5,19 @@ import java.awt.*;
 
 import entity.CurrentUser;
 import interface_adapter.ViewManagerModel;
+import interface_adapter.genre_distribution.GenreDistributionController;
+import interface_adapter.genre_distribution.GenreDistributionPresenter;
+import interface_adapter.genre_distribution.GenreDistributionViewModel;
 import interface_adapter.login.LoginController2;
 import interface_adapter.login.LoginPresenter2;
 import interface_adapter.login.LoginViewModel2;
 import interface_adapter.top_songs.TopSongsController;
 import interface_adapter.top_songs.TopSongsPresenter;
 import interface_adapter.top_songs.TopSongsViewModel;
+import use_case.genre_distribution.GenreDistributionInteractor;
 import use_case.login.LoginInteractor2;
 import use_case.topsongs.TopSongsInteractor;
+import view.GenreDistributionView;
 import view.LoginView2;
 import view.LoggedInView;
 import view.TopSongsView;
@@ -85,6 +90,25 @@ public class AppBuilder2 {
 
         return this;
     }
+
+    public AppBuilder2 addGenreDistributionUseCase() {
+        GenreDistributionViewModel viewModel = new GenreDistributionViewModel();
+        GenreDistributionPresenter presenter = new GenreDistributionPresenter(viewModel);
+        GenreDistributionInteractor interactor = new GenreDistributionInteractor(presenter);
+        GenreDistributionController controller = new GenreDistributionController(interactor);
+        GenreDistributionView view = new GenreDistributionView();
+
+        // Set up the action listener for "View Genre Distribution"
+        loggedInView.setGenreDistributionActionListener(e -> {
+            controller.fetchAndPresentGenreDistribution(currentUser);
+            view.updateView(viewModel);
+            cardPanel.add(view, "genreDistribution");
+            cardLayout.show(cardPanel, "genreDistribution");
+        });
+
+        return this;
+    }
+
     public JFrame build() {
         JFrame application = new JFrame("Login Application");
         application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

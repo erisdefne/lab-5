@@ -11,12 +11,4 @@ public class CurrentUser {
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
     }
-
-    public static String getTopSongs() {
-        return topSongs;
-    }
-
-    public void setTopSongs(String topSongs) {
-        this.topSongs = topSongs;
-    }
 }
