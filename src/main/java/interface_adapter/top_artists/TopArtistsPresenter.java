@@ -1,7 +1,6 @@
 package interface_adapter.top_artists;
 
 import use_case.top_artists.TopArtistsOutputBoundary;
-import use_case.top_artists.TopArtistsOutputData;
 
 import java.util.List;
 
@@ -14,15 +13,15 @@ public class TopArtistsPresenter implements TopArtistsOutputBoundary {
     private String errorMessage;
 
     @Override
-    public void presentTopArtists(List<String> topArtists) {
-        this.topArtists = topArtists;
-        this.errorMessage = null; // Clear any previous errors
+    public void presentTopArtists(List<String> top_artists) {
+        this.topArtists = top_artists;
+        this.errorMessage = null;
     }
 
     @Override
-    public void handleError(String errorMessage) {
-        this.errorMessage = errorMessage;
-        this.topArtists = null; // Clear any previous data
+    public void handleError(String error) {
+        this.errorMessage = error;
+        this.topArtists = null;
     }
 
     /**
