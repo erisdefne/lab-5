@@ -1,38 +1,27 @@
 package interface_adapter.TempoAnalyser;
 
-import java.util.Map;
-import java.util.StringJoiner;
+import use_case.TempoAnalyser.TempoAnalysisOutputBoundary;
 
-/**
- * The presenter class responsible for preparing and formatting the tempo analysis results.
- */
-public class TempoAnalysisPresenter {
-    private Map<String, Integer> tempoResults;
+import java.util.Map;
+
+public class TempoAnalysisPresenter implements TempoAnalysisOutputBoundary {
+    private Map<String, Integer> tempoCategories;
     private String errorMessage;
 
-    public void present(Map<String, Integer> tempoResults) {
-        this.tempoResults = tempoResults;
+    @Override
+    public void presentTempoAnalysis(Map<String, Integer> tempoCategories) {
+        this.tempoCategories = tempoCategories;
         this.errorMessage = null;
     }
 
-    public void setErrorMessage(String errorMessage) {
-        this.tempoResults = null;
+    @Override
+    public void handleError(String errorMessage) {
         this.errorMessage = errorMessage;
+        this.tempoCategories = null;
     }
 
-    public String getFormattedOutput() {
-        if (errorMessage != null) {
-            return "Error: " + errorMessage;
-        }
-        final StringJoiner output = new StringJoiner("\n");
-        output.add("Tempo Analysis Results:");
-        for (Map.Entry<String, Integer> entry : tempoResults.entrySet()) {
-            output.add(entry.getKey() + ": " + entry.getValue());
-        }
-        return output.toString();
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
+    public String getResults() {
+        if (errorMessage != null) return "Error: " + errorMessage;
+        return tempoCategories.toString();
     }
 }

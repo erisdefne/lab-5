@@ -1,30 +1,38 @@
 package use_case.TempoAnalyser;
 
-import entity.TempoAnalysisEntity;
+import entity.CurrentUser;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * The interactor class for implementing the Tempo Analysis use case.
- */
 public class TempoAnalysisInteractor implements TempoAnalysisInputBoundary {
+    private final TempoAnalyserFetcher fetcher;
+    private final TempoAnalysisOutputBoundary outputBoundary;
 
-    @Override
-    public Map<String, Integer> analyzeTempos(List<String> trackIds) throws IOException {
-        final Map<String, Integer> tempoCategories = new HashMap<>();
-        for (String trackId : trackIds) {
-            final double tempo = fetchTrackTempo(trackId);
-            final String category = TempoAnalysisEntity.categorizeTempo(tempo);
-            tempoCategories.put(category, tempoCategories.getOrDefault(category, 0) + 1);
-        }
-        return tempoCategories;
+    public TempoAnalysisInteractor(TempoAnalyserFetcher fetcher, TempoAnalysisOutputBoundary outputBoundary) {
+        this.fetcher = fetcher;
+        this.outputBoundary = outputBoundary;
     }
 
-    private double fetchTrackTempo(String trackId) throws IOException {
-        // Mock tempo fetching logic, replace with API or database retrieval
-        return Math.random() * 200;
+    @Override
+    public void analyzeTempos(List<String> trackIds) {
+        Map<String, Integer> categories = new HashMap<>();
+        categories.put("Slow", 0);
+        categories.put("Moderate", 0);
+        categories.put("Fast", 0);
+
+        try {
+            for (String trackId : trackIds) {
+                double tempo = fetcher.getTempo(trackId, CurrentUser.getInstance());
+                if (tempo <= 90) categories.put("Slow", categories.get("Slow") + 1);
+                else if (tempo <= 120) categories.put("Moderate", categories.get("Moderate") + 1);
+                else categories.put("Fast", categories.get("Fast") + 1);
+            }
+            outputBoundary.presentTempoAnalysis(categories);
+        }
+        catch (Exception e) {
+            outputBoundary.handleError("Error analyzing tempos: " + e.getMessage());
+        }
     }
 }
