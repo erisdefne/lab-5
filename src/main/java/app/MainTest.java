@@ -10,6 +10,7 @@ public class MainTest {
         JFrame application = appBuilder2
                 .addLoginView()
                 .addLoggedInView()
+                .addSongRecommendUseCase()
                 .addLoginUseCase()
                 .build();
 

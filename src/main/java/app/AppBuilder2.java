@@ -4,9 +4,12 @@ import javax.swing.*;
 import java.awt.*;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.login.LoginController2;
+import interface_adapter.song_recommend.SongRecommendController;
+import interface_adapter.song_recommend.SongRecommendPresenter;
 import interface_adapter.login.LoginPresenter2;
 import interface_adapter.login.LoginViewModel2;
 import use_case.login.LoginInteractor2;
+import use_case.song_recommend.SongRecommendInteractor;
 import view.LoginView2;
 import view.LoggedInView;
 
@@ -18,6 +21,8 @@ public class AppBuilder2 {
     private LoginViewModel2 loginViewModel2;
     private LoginView2 loginView2;
     private LoggedInView loggedInView;
+    private SongRecommendController songRecommendController;
+    private SongRecommendPresenter songRecommendPresenter;
 
     public AppBuilder2() {
         cardPanel.setLayout(cardLayout);
@@ -32,6 +37,8 @@ public class AppBuilder2 {
 
     public AppBuilder2 addLoggedInView() {
         loggedInView = new LoggedInView();
+        loggedInView.setSongRecommendController(songRecommendController); // Wire the controller
+        loggedInView.setSongRecommendPresenter(songRecommendPresenter);
         cardPanel.add(loggedInView, loggedInView.getViewName());
         return this;
     }
@@ -47,6 +54,12 @@ public class AppBuilder2 {
             }
         });
 
+        return this;
+    }
+    public AppBuilder2 addSongRecommendUseCase() {
+        songRecommendPresenter = new SongRecommendPresenter();
+        SongRecommendInteractor interactor = new SongRecommendInteractor(songRecommendPresenter);
+        songRecommendController = new SongRecommendController(interactor);
         return this;
     }
 
