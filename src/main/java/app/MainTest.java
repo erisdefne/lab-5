@@ -13,7 +13,6 @@ public class MainTest {
                 .addLoginUseCase()
                 .addTopArtistsUseCase()
                 .addLoggedInView()
-                .addSongRecommendUseCase()
                 .build();
 
         application.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
