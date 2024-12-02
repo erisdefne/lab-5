@@ -98,10 +98,13 @@ public class LoggedInView extends JPanel {
             JButton recommendSongsButton = new JButton("Recommend Songs");
             recommendSongsButton.addActionListener(e -> {
                 if (songRecommendController != null) {
+                    String topGenre = null;
                     try {
                         Map<String, Integer> topTracks = DataGateway.getTopTrackGenres("short_term", "20", currentUser);
-                        Iterator<String> iterator = topTracks.keySet().iterator();
-                        String topGenre = iterator.hasNext() ? iterator.next() : null;
+                        topGenre = topTracks.entrySet().stream()
+                                .max(Map.Entry.comparingByValue()) // Get the genre with the highest count
+                                .map(Map.Entry::getKey)            // Extract the genre name
+                                .orElse(null);
 
                         List<String> userTopTracks = DataGateway.fetchUserTopTracks(currentUser);
                         songRecommendController.fetchRecommendSongs(topGenre, userTopTracks);
