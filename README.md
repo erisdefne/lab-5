@@ -22,7 +22,7 @@ Spotilyze is a powerful tool that connects to your Spotify account and provides 
     - View a ranked list of your most-played artists from the past year.
 
 3. **Top Songs**
-    - Explore your top 100 most-listened-to songs from recent years, showcasing your all-time favorites.
+    - Explore your top 20 most-listened-to songs from recent years, showcasing your all-time favorites.
 
 4. **Playlist Genre Analysis**
     - Select any playlist and get an instant breakdown of genre distribution to see what type of music dominates your playlists.
