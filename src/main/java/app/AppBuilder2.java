@@ -5,6 +5,10 @@ import java.awt.*;
 
 import entity.CurrentUser;
 import interface_adapter.ViewManagerModel;
+import interface_adapter.compare_playlists.PlaylistSimilarityController;
+import interface_adapter.compare_playlists.PlaylistSimilarityPresenter;
+import interface_adapter.compare_playlists.PlaylistSimilarityViewModel;
+import view.SimilarityScorePanel;
 import interface_adapter.genre_distribution.GenreDistributionController;
 import interface_adapter.genre_distribution.GenreDistributionPresenter;
 import interface_adapter.genre_distribution.GenreDistributionViewModel;
@@ -19,6 +23,8 @@ import interface_adapter.top_songs.TopSongsController;
 import interface_adapter.top_songs.TopSongsPresenter;
 import interface_adapter.top_songs.TopSongsViewModel;
 import use_case.TempoAnalyser.TempoAnalyserInteractor;
+import use_case.compare_playlists.ComparePlaylistInteractor;
+import use_case.compare_playlists.SpotifyPlaylistRepository;
 import use_case.genre_distribution.GenreDistributionInteractor;
 import interface_adapter.top_artists.TopArtistsController;
 import interface_adapter.top_artists.TopArtistsPresenter;
@@ -40,6 +46,9 @@ public class AppBuilder2 {
     private SongRecommendController songRecommendController;
     private SongRecommendPresenter songRecommendPresenter;
     private SongRecommendViewModel songRecommendViewModel;
+    private SimilarityScorePanel similarityScorePanel;
+    private PlaylistSimilarityPresenter playlistSimilarityPresenter;
+    private PlaylistSimilarityController playlistSimilarityController;
     private JFrame application;
 
     public AppBuilder2() {
@@ -54,7 +63,7 @@ public class AppBuilder2 {
     }
 
     public AppBuilder2 addLoggedInView() {
-        loggedInView = new LoggedInView();
+        loggedInView = new LoggedInView(cardPanel, cardLayout);
         if (topArtistsController != null && topArtistsPresenter != null) {
             loggedInView.setTopArtistsController(topArtistsController);
             loggedInView.setTopArtistsPresenter(topArtistsPresenter);
@@ -147,6 +156,27 @@ public class AppBuilder2 {
 
         loggedInView.setSongRecommendController(controller);
         loggedInView.setSongRecommendPresenter(presenter);
+        return this;
+    }
+
+    public AppBuilder2 addSimilarityScorePanel() {
+        similarityScorePanel = new SimilarityScorePanel(cardPanel, cardLayout, loggedInView); // Pass loggedInView
+        cardPanel.add(similarityScorePanel, "Similarity Score Panel");
+        return this;
+    }
+
+
+    public AppBuilder2 addComparePlaylistsUseCase() {
+        PlaylistSimilarityViewModel playlistSimilarityViewModel = new PlaylistSimilarityViewModel();
+
+        // Pass SimilarityScorePanel to the Presenter
+        playlistSimilarityPresenter = new PlaylistSimilarityPresenter(playlistSimilarityViewModel, similarityScorePanel);
+
+        ComparePlaylistInteractor comparePlaylistInteractor = new ComparePlaylistInteractor(new SpotifyPlaylistRepository(), playlistSimilarityPresenter);
+        playlistSimilarityController = new PlaylistSimilarityController(comparePlaylistInteractor, playlistSimilarityPresenter);
+
+        loggedInView.setPlaylistSimilarityController(playlistSimilarityController);
+
         return this;
     }
 
