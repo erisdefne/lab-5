@@ -1,11 +1,15 @@
-package use_case.tempo_analyser;
+package use_case.TempoAnalyser;
 
 import java.util.Map;
 
-public class TempoAnalyserOutputData {
+/**
+ * Output data class for the Tempo Analysis use case.
+ */
+public class TempoAnalysisOutputData {
+
     private final Map<String, Integer> tempoCategories;
 
-    public TempoAnalyserOutputData(Map<String, Integer> tempoCategories) {
+    public TempoAnalysisOutputData(Map<String, Integer> tempoCategories) {
         this.tempoCategories = tempoCategories;
     }
 
