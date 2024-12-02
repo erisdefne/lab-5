@@ -1,6 +1,9 @@
 package view;
 
 import entity.CurrentUser;
+
+import interface_adapter.compare_playlists.PlaylistSimilarityController;
+
 import interface_adapter.top_artists.TopArtistsController;
 import interface_adapter.top_artists.TopArtistsPresenter;
 
@@ -26,26 +29,56 @@ import java.util.Map;
  */
 public class LoggedInView extends JPanel {
 
-    private final String viewName = "logged in";
-    private final JButton genreDistribution;
-    private final JButton topSongsButton;
+    private static final String viewName = "logged in";
+    private boolean isMainPanel = true;
+    private JButton genreDistribution;
+    private JButton topSongsButton;
+    private JButton comparePlaylistsButton;
+    private JButton topArtistsButton;
+    private JButton recommendSongsButton;
+
     private TopArtistsController topArtistsController;
     private TopArtistsPresenter topArtistsPresenter;
+
+    private PlaylistSimilarityController playlistSimilarityController;
+
     private SongRecommendController songRecommendController;
     private SongRecommendPresenter songRecommendPresenter;
+
     public CurrentUser currentUser;
 
-    public LoggedInView() {
+    private JTextField playlist1NameField;
+    private JTextField playlist1OwnerField;
+    private JTextField playlist2NameField;
+    private JTextField playlist2OwnerField;
+    private JButton submitButton;
+
+    private JPanel cardPanel;
+    private CardLayout cardLayout;
+
+    public LoggedInView(JPanel cardPanel, CardLayout cardLayout) {
+        this.cardPanel = cardPanel;
+        this.cardLayout = cardLayout;
+
+        // Start in the main panel state
         setLayout(new GridLayout(3, 2, 10, 10)); // 3 rows, 2 columns with gaps
+        initializeMainPanel();
+    }
+    private void initializeMainPanel() {
+        removeAll();
+        revalidate();
+        repaint();
+
+        isMainPanel = true;
 
         // Initialize and add buttons
         genreDistribution = new JButton("GenreDistribution");
         add(genreDistribution);
         topSongsButton = new JButton("TopSongs");
         add(topSongsButton);
+        topArtistsButton = new JButton("Top Artists");
+        comparePlaylistsButton = new JButton("Compare Playlists");
 
-        // Add "Top Artists" button
-        JButton topArtistsButton = new JButton("Top Artists");
         topArtistsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -61,7 +94,7 @@ public class LoggedInView extends JPanel {
 
         add(topArtistsButton);
         // Add additional placeholder buttons
-        JButton recommendSongsButton = new JButton("Recommend Songs");
+        recommendSongsButton = new JButton("Recommend Songs");
         recommendSongsButton.addActionListener(e -> {
             if (songRecommendController != null) {
                 String topGenre = null;
@@ -95,7 +128,17 @@ public class LoggedInView extends JPanel {
         });
         add(recommendSongsButton);
         // Add buttons
+
+        // Add action listener for "Compare Playlists" button
+        comparePlaylistsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showPlaylistComparisonInputs();
+            }
+        });
+        add(comparePlaylistsButton);
     }
+
     private void displayRecommendedSongs() {
         if (songRecommendPresenter != null) {
             SongRecommendState viewModel = SongRecommendViewModel.getState();
@@ -148,6 +191,110 @@ public class LoggedInView extends JPanel {
             }
         }
     }
+    /**
+     //     * Displays input fields for entering playlist names and owners.
+     //     * This method is triggered when the "Compare Playlists" button is clicked.
+     //     */
+    private void showPlaylistComparisonInputs() {
+        removeAll(); // Clear the current panel
+        revalidate();
+        repaint();
+
+        isMainPanel = false; // Mark this as the comparison panel state
+
+        setLayout(new GridLayout(7, 2, 10, 10)); // Adjust layout to include the back button
+
+        // Initialize input fields
+        JLabel playlist1NameLabel = new JLabel("Playlist 1 Name:");
+        playlist1NameField = new JTextField();
+        JLabel playlist1OwnerLabel = new JLabel("Playlist 1 Owner:");
+        playlist1OwnerField = new JTextField();
+
+        JLabel playlist2NameLabel = new JLabel("Playlist 2 Name:");
+        playlist2NameField = new JTextField();
+        JLabel playlist2OwnerLabel = new JLabel("Playlist 2 Owner:");
+        playlist2OwnerField = new JTextField();
+
+        // Initialize Submit and Back buttons
+        submitButton = new JButton("Submit");
+        JButton backButton = new JButton("Go Back");
+
+        // Add components to the comparison panel
+        add(playlist1NameLabel);
+        add(playlist1NameField);
+        add(playlist1OwnerLabel);
+        add(playlist1OwnerField);
+
+        add(playlist2NameLabel);
+        add(playlist2NameField);
+        add(playlist2OwnerLabel);
+        add(playlist2OwnerField);
+
+        add(new JLabel()); // Empty cell for alignment
+        add(submitButton);
+
+        add(new JLabel()); // Empty cell for alignment
+        add(backButton);
+
+        // Add action listener for the submit button
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                processPlaylistComparison();
+            }
+        });
+
+        // Add action listener for the back button
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                switchToMainPanel(); // Reinitialize the main panel
+            }
+        });
+    }
+
+    /**
+     * Processes the playlist comparison by sending user inputs to the Controller.
+     */
+    private void processPlaylistComparison() {
+        String playlist1Name = playlist1NameField.getText().trim();
+        String playlist1Owner = playlist1OwnerField.getText().trim();
+        String playlist2Name = playlist2NameField.getText().trim();
+        String playlist2Owner = playlist2OwnerField.getText().trim();
+
+        if (playlist1Name.isEmpty() || playlist1Owner.isEmpty() ||
+                playlist2Name.isEmpty() || playlist2Owner.isEmpty()) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Please fill in all fields!",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+            return;
+        }
+
+        if (playlistSimilarityController != null) {
+            playlistSimilarityController.comparePlaylists(
+                    playlist1Name,
+                    playlist1Owner,
+                    playlist2Name,
+                    playlist2Owner
+            );
+
+            cardLayout.show(cardPanel, "Similarity Score Panel");
+        }
+    }
+
+    /**
+     * Switches back to the main panel state (buttons view).
+     */
+    public void switchToMainPanel() {
+        initializeMainPanel(); // Reinitialize the main panel
+    }
+
+    public void setPlaylistSimilarityController(PlaylistSimilarityController playlistSimilarityController) {
+        this.playlistSimilarityController = playlistSimilarityController;
+    }
 
 
 
@@ -187,6 +334,4 @@ public class LoggedInView extends JPanel {
         this.songRecommendPresenter = songRecommendPresenter;
     }
 }
-
-
 

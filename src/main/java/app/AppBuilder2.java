@@ -8,6 +8,9 @@ import interface_adapter.ViewManagerModel;
 import interface_adapter.genre_distribution.GenreDistributionController;
 import interface_adapter.genre_distribution.GenreDistributionPresenter;
 import interface_adapter.genre_distribution.GenreDistributionViewModel;
+import interface_adapter.compare_playlists.PlaylistSimilarityController;
+import interface_adapter.compare_playlists.PlaylistSimilarityPresenter;
+import interface_adapter.compare_playlists.PlaylistSimilarityViewModel;
 import interface_adapter.login.LoginController2;
 import interface_adapter.song_recommend.SongRecommendController;
 import interface_adapter.song_recommend.SongRecommendPresenter;
@@ -20,6 +23,8 @@ import use_case.genre_distribution.GenreDistributionInteractor;
 import interface_adapter.top_artists.TopArtistsController;
 import interface_adapter.top_artists.TopArtistsPresenter;
 import interface_adapter.song_recommend.SongRecommendViewModel;
+import use_case.compare_playlists.ComparePlaylistInteractor;
+import use_case.compare_playlists.SpotifyPlaylistRepository;
 import use_case.login.LoginInteractor2;
 import use_case.topsongs.TopSongsInteractor;
 import view.GenreDistributionView;
@@ -28,6 +33,7 @@ import use_case.song_recommend.SongRecommendInteractor;
 import view.LoginView2;
 import view.LoggedInView;
 import view.TopSongsView;
+import view.SimilarityScorePanel;
 
 public class AppBuilder2 {
 
@@ -37,6 +43,9 @@ public class AppBuilder2 {
     private LoginViewModel2 loginViewModel2;
     private LoginView2 loginView2;
     private LoggedInView loggedInView;
+    private SimilarityScorePanel similarityScorePanel;
+    private PlaylistSimilarityPresenter playlistSimilarityPresenter;
+    private PlaylistSimilarityController playlistSimilarityController;
     private final CurrentUser currentUser = new CurrentUser();
     private SongRecommendController songRecommendController;
     private SongRecommendPresenter songRecommendPresenter;
@@ -62,7 +71,7 @@ public class AppBuilder2 {
             System.out.println("Warning: TopArtistsPresenter is null in addLoggedInView!");
         }
 
-        loggedInView = new LoggedInView();
+        loggedInView = new LoggedInView(cardPanel, cardLayout);
         loggedInView.setTopArtistsController(topArtistsController); // Wire the controller
         loggedInView.setTopArtistsPresenter(topArtistsPresenter);   // Wire the presenter
         loggedInView.setSongRecommendController(songRecommendController); // Wire the controller
@@ -166,12 +175,36 @@ public class AppBuilder2 {
         return this;
     }
 
+    public AppBuilder2 addSimilarityScorePanel() {
+        similarityScorePanel = new SimilarityScorePanel(cardPanel, cardLayout, loggedInView); // Pass loggedInView
+        cardPanel.add(similarityScorePanel, "Similarity Score Panel");
+        return this;
+    }
+
+
+    public AppBuilder2 addComparePlaylistsUseCase() {
+        PlaylistSimilarityViewModel playlistSimilarityViewModel = new PlaylistSimilarityViewModel();
+
+        // Pass SimilarityScorePanel to the Presenter
+        playlistSimilarityPresenter = new PlaylistSimilarityPresenter(playlistSimilarityViewModel, similarityScorePanel);
+
+        ComparePlaylistInteractor comparePlaylistInteractor = new ComparePlaylistInteractor(new SpotifyPlaylistRepository(), playlistSimilarityPresenter);
+        playlistSimilarityController = new PlaylistSimilarityController(comparePlaylistInteractor, playlistSimilarityPresenter);
+
+        loggedInView.setPlaylistSimilarityController(playlistSimilarityController);
+
+        return this;
+    }
+
     public JFrame build() {
         application = new JFrame("Spotilyze");
         application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         application.add(cardPanel);
         cardLayout.show(cardPanel, loginView2.getViewName());
         application.setSize(400, 300);
+
+
+        application.setSize(600, 400);
         return application;
     }
 }
