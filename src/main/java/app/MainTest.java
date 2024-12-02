@@ -11,6 +11,8 @@ public class MainTest {
                 .addLoginView()
                 .addLoggedInView()
                 .addLoginUseCase()
+                .addSimilarityScorePanel()
+                .addComparePlaylistsUseCase()
                 .build();
 
         application.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

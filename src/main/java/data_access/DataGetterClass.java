@@ -1,3 +1,5 @@
+package data_access;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -12,7 +14,7 @@ public class DataGetterClass {
 
     public static JsonNode getData(String queryUrl) throws IOException {
         // Construct the query URL
-        String token = "BQDs3UcQeSATPNczKFdFC8NkZ95Xg7be_ru28iTsKdesZN53y4cKHze72mAfqOsEzsPJW6SKX3pLI8MCWQFmbGl4d42s8pYZMc3skRwvpnXRmMB0pROArdc1Xpn4_4zA2ieIcQsekKzVB_ZCFOpmPp8pxee-XmDILoqOPf54zR4craYxMEb9JellFUSXm6Gr9gkkoiEW2BeSX3pzMcL6u_v3WHdGc2z0z9T7z7KMq4N1pA";
+        String token = "BQBe5ikBvxqPsyNKVEZ5G9eWIEoaCmT1m_xL9ReNoibxo_SaWEIiEgoY_HLfPV2epN_SB9moHzNKq8cCUNoiiQbHvXr4B_kXO4z9Dmv91Ic9C47wPRnOTnYto3Tp_z7v1xZnRr_XRUnOjq5slwAvwiaVpNJ8BXDOjMyX-bjuQ5-CyBjtYmRiXenJp_ae6apsKL2_5uT5lhMZJbBrEPz7wg3OSId4eL_BgjBNb4jakC6j6Q";
 
 
         //LoginClass.getAccess_token();

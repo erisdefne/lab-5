@@ -5,12 +5,18 @@ import java.awt.*;
 
 import entity.CurrentUser;
 import interface_adapter.ViewManagerModel;
+import interface_adapter.compare_playlists.PlaylistSimilarityController;
+import interface_adapter.compare_playlists.PlaylistSimilarityPresenter;
+import interface_adapter.compare_playlists.PlaylistSimilarityViewModel;
 import interface_adapter.login.LoginController2;
 import interface_adapter.login.LoginPresenter2;
 import interface_adapter.login.LoginViewModel2;
+import use_case.compare_playlists.ComparePlaylistInteractor;
+import use_case.compare_playlists.SpotifyPlaylistRepository;
 import use_case.login.LoginInteractor2;
 import view.LoginView2;
 import view.LoggedInView;
+import view.SimilarityScorePanel;
 
 public class AppBuilder2 {
 
@@ -20,6 +26,9 @@ public class AppBuilder2 {
     private LoginViewModel2 loginViewModel2;
     private LoginView2 loginView2;
     private LoggedInView loggedInView;
+    private SimilarityScorePanel similarityScorePanel;
+    private PlaylistSimilarityPresenter playlistSimilarityPresenter;
+    private PlaylistSimilarityController playlistSimilarityController;
     private final CurrentUser currentUser = new CurrentUser();
 
     public AppBuilder2() {
@@ -34,10 +43,11 @@ public class AppBuilder2 {
     }
 
     public AppBuilder2 addLoggedInView() {
-        loggedInView = new LoggedInView();
+        loggedInView = new LoggedInView(cardPanel, cardLayout);
         cardPanel.add(loggedInView, loggedInView.getViewName());
         return this;
     }
+
     public AppBuilder2 addLoginUseCase() {
         LoginPresenter2 loginPresenter2 = new LoginPresenter2(viewManagerModel);
         LoginInteractor2 loginInteractor2 = new LoginInteractor2(loginPresenter2, currentUser);
@@ -53,6 +63,27 @@ public class AppBuilder2 {
         return this;
     }
 
+    public AppBuilder2 addSimilarityScorePanel() {
+        similarityScorePanel = new SimilarityScorePanel();
+        cardPanel.add(similarityScorePanel, "Similarity Score Panel"); // Add SimilarityScorePanel to the CardLayout
+        return this;
+    }
+
+
+    public AppBuilder2 addComparePlaylistsUseCase() {
+        PlaylistSimilarityViewModel playlistSimilarityViewModel = new PlaylistSimilarityViewModel();
+
+        // Pass SimilarityScorePanel to the Presenter
+        playlistSimilarityPresenter = new PlaylistSimilarityPresenter(playlistSimilarityViewModel, similarityScorePanel);
+
+        ComparePlaylistInteractor comparePlaylistInteractor = new ComparePlaylistInteractor(new SpotifyPlaylistRepository(), playlistSimilarityPresenter);
+        playlistSimilarityController = new PlaylistSimilarityController(comparePlaylistInteractor, playlistSimilarityPresenter);
+
+        loggedInView.setPlaylistSimilarityController(playlistSimilarityController);
+
+        return this;
+    }
+
     public JFrame build() {
         JFrame application = new JFrame("Login Application");
         application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -60,7 +91,7 @@ public class AppBuilder2 {
         cardLayout.show(cardPanel, loginView2.getViewName());
 
 
-        application.setSize(300, 200);
+        application.setSize(600, 400);
         return application;
     }
 }
