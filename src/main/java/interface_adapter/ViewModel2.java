@@ -10,7 +10,7 @@ import java.beans.PropertyChangeSupport;
  *
  * @param <T> The type of state object contained in the model.
  */
-public class ViewModel<T> {
+public class ViewModel2<T> {
 
     private final String viewName;
 
@@ -18,7 +18,7 @@ public class ViewModel<T> {
 
     private T state;
 
-    public ViewModel(String viewName) {
+    public ViewModel2(String viewName) {
         this.viewName = viewName;
     }
 

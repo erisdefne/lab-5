@@ -1,146 +1,325 @@
 package view;
 
-import java.awt.Component;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import entity.CurrentUser;
+import interface_adapter.compare_playlists.PlaylistSimilarityController;
+import interface_adapter.tempo_analyser.TempoAnalyserController;
+import interface_adapter.tempo_analyser.TempoAnalyserPresenter;
+import interface_adapter.top_artists.TopArtistsController;
+import interface_adapter.top_artists.TopArtistsPresenter;
 
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
+import data_access.DataGateway;
+import interface_adapter.song_recommend.SongRecommendController;
+import interface_adapter.song_recommend.SongRecommendPresenter;
+import interface_adapter.song_recommend.SongRecommendState;
+import interface_adapter.song_recommend.SongRecommendViewModel;
 
-import interface_adapter.change_password.ChangePasswordController;
-import interface_adapter.change_password.LoggedInState;
-import interface_adapter.change_password.LoggedInViewModel;
-import interface_adapter.logout.LogoutController;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.Map;
+import java.util.Iterator;
+import java.util.Arrays;
+import java.io.IOException;
 
 /**
- * The View for when the user is logged into the program.
+ * The View for the logged-in state of the application.
  */
-public class LoggedInView extends JPanel implements PropertyChangeListener {
+public class LoggedInView extends JPanel {
 
     private final String viewName = "logged in";
-    private final LoggedInViewModel loggedInViewModel;
-    private final JLabel passwordErrorField = new JLabel();
-    private ChangePasswordController changePasswordController;
-    private LogoutController logoutController;
+    private boolean isMainPanel = true;
+    private JButton genreDistribution;
+    private JButton topSongsButton;
+    private JButton tempoAnalyserButton;
+    private JButton comparePlaylistsButton;
+    private TopArtistsController topArtistsController;
+    private TopArtistsPresenter topArtistsPresenter;
+    private SongRecommendController songRecommendController;
+    private SongRecommendPresenter songRecommendPresenter;
+    private TempoAnalyserController tempoAnalyserController;
+    private TempoAnalyserPresenter tempoAnalyserPresenter;
+    private PlaylistSimilarityController playlistSimilarityController;
+    public CurrentUser currentUser;
 
-    private final JLabel username;
+    private JTextField playlist1NameField;
+    private JTextField playlist1OwnerField;
+    private JTextField playlist2NameField;
+    private JTextField playlist2OwnerField;
+    private JButton submitButton;
 
-    private final JButton logOut;
+    private JPanel cardPanel;
+    private CardLayout cardLayout;
 
-    private final JTextField passwordInputField = new JTextField(15);
-    private final JButton changePassword;
+    public LoggedInView(JPanel cardPanel, CardLayout cardLayout) {
+        this.cardPanel = cardPanel;
+        this.cardLayout = cardLayout;
+        setLayout(new GridLayout(3, 2, 10, 10)); // 3 rows, 2 columns with gaps
+        initializeMainPanel();
+    }
+        // Initialize and add buttons
+        private void initializeMainPanel() {
+            removeAll();
+            revalidate();
+            repaint();
 
-    public LoggedInView(LoggedInViewModel loggedInViewModel) {
-        this.loggedInViewModel = loggedInViewModel;
-        this.loggedInViewModel.addPropertyChangeListener(this);
+            isMainPanel = true;
 
-        final JLabel title = new JLabel("Logged In Screen");
-        title.setAlignmentX(Component.CENTER_ALIGNMENT);
+            genreDistribution = new JButton("Genre Distribution");
+            add(genreDistribution);
 
-        final LabelTextPanel passwordInfo = new LabelTextPanel(
-                new JLabel("Password"), passwordInputField);
+            topSongsButton = new JButton("Top Songs");
+            add(topSongsButton);
 
-        final JLabel usernameInfo = new JLabel("Currently logged in: ");
-        username = new JLabel();
+            comparePlaylistsButton = new JButton("Compare Playlists");
 
-        final JPanel buttons = new JPanel();
-        logOut = new JButton("Log Out");
-        buttons.add(logOut);
+            // Add "Top Artists" button
+            JButton topArtistsButton = new JButton("Top Artists");
+            topArtistsButton.addActionListener(e -> {
+                if (topArtistsController != null) {
+                    topArtistsController.fetchTopArtists("long_term", 15);
+                    SwingUtilities.invokeLater(this::displayTopArtists);
+                }
+            });
+            add(topArtistsButton);
 
-        changePassword = new JButton("Change Password");
-        buttons.add(changePassword);
+            // Add "Tempo Analysis" button
+            tempoAnalyserButton = new JButton("Tempo Analyser");
+            tempoAnalyserButton.addActionListener(e -> {
+                if (tempoAnalyserController != null) {
+                    tempoAnalyserController.analyseTempo("medium_term", 10); // Adjusted to use `timeRange` and `limit`
+                    SwingUtilities.invokeLater(this::displayTempoAnalysisResults);
+                }
+            });
+            add(tempoAnalyserButton);
 
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+            // Add "Recommend Songs" button
+            JButton recommendSongsButton = new JButton("Recommend Songs");
+            recommendSongsButton.addActionListener(e -> {
+                if (songRecommendController != null) {
+                    try {
+                        Map<String, Integer> topTracks = DataGateway.getTopTrackGenres("short_term", "20", currentUser);
+                        Iterator<String> iterator = topTracks.keySet().iterator();
+                        String topGenre = iterator.hasNext() ? iterator.next() : null;
 
-        passwordInputField.getDocument().addDocumentListener(new DocumentListener() {
+                        List<String> userTopTracks = DataGateway.fetchUserTopTracks(currentUser);
+                        songRecommendController.fetchRecommendSongs(topGenre, userTopTracks);
 
-            private void documentListenerHelper() {
-                final LoggedInState currentState = loggedInViewModel.getState();
-                currentState.setPassword(passwordInputField.getText());
-                loggedInViewModel.setState(currentState);
+                        SwingUtilities.invokeLater(this::displayRecommendedSongs);
+                    } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(this, "Error fetching recommended songs: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            });
+            add(recommendSongsButton);
+
+            // Add action listener for "Compare Playlists" button
+            comparePlaylistsButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    showPlaylistComparisonInputs();
+                }
+            });
+            add(comparePlaylistsButton);
+        }
+
+
+    private void displayRecommendedSongs() {
+        if (songRecommendPresenter != null) {
+            SongRecommendState viewModel = SongRecommendViewModel.getState();
+            String errorMessage = viewModel.getErrorMessage();
+
+            if (errorMessage != null) {
+                JOptionPane.showMessageDialog(this, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                Map<String, String> songs = viewModel.getRecommendedSongs();
+                if (songs != null && !songs.isEmpty()) {
+                    StringBuilder message = new StringBuilder("Recommended Songs:\n");
+                    songs.forEach((track, artist) -> message.append(track).append(" by ").append(artist).append("\n"));
+                    JOptionPane.showMessageDialog(this, message.toString(), "Recommendations", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "No recommendations found.", "Recommendations", JOptionPane.INFORMATION_MESSAGE);
+                }
             }
+        }
+    }
 
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                documentListenerHelper();
+    private void displayTopArtists() {
+        if (topArtistsPresenter != null) {
+            String errorMessage = topArtistsPresenter.getErrorMessage();
+            if (errorMessage != null) {
+                JOptionPane.showMessageDialog(this, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                List<String> topArtists = topArtistsPresenter.getTopArtists();
+                if (topArtists != null && !topArtists.isEmpty()) {
+                    StringBuilder message = new StringBuilder("<html><body>");
+                    message.append("<h2>Your Top Artists</h2><ul>");
+                    for (String artist : topArtists) {
+                        message.append("<li>").append(artist).append("</li>");
+                    }
+                    message.append("</ul></body></html>");
+                    JOptionPane.showMessageDialog(this, message.toString(), "Top Artists", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "No top artists found.", "Top Artists", JOptionPane.INFORMATION_MESSAGE);
+                }
             }
+        }
+    }
 
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                documentListenerHelper();
+    private void displayTempoAnalysisResults() {
+        if (tempoAnalyserPresenter != null) {
+            String errorMessage = tempoAnalyserPresenter.getErrorMessage();
+            if (errorMessage != null) {
+                JOptionPane.showMessageDialog(this, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                Map<String, Integer> tempoAnalysis = tempoAnalyserPresenter.getTempoAnalysis();
+                StringBuilder message = new StringBuilder("Tempo Analysis Results:\n");
+                tempoAnalysis.forEach((category, count) -> message.append(category).append(": ").append(count).append("\n"));
+                JOptionPane.showMessageDialog(this, message.toString(), "Tempo Analysis", JOptionPane.INFORMATION_MESSAGE);
             }
+        }
+    }
 
+    private void showPlaylistComparisonInputs() {
+        removeAll(); // Clear the current panel
+        revalidate();
+        repaint();
+
+        isMainPanel = false; // Mark this as the comparison panel state
+
+        setLayout(new GridLayout(7, 2, 10, 10)); // Adjust layout to include the back button
+
+        // Initialize input fields
+        JLabel playlist1NameLabel = new JLabel("Playlist 1 Name:");
+        playlist1NameField = new JTextField();
+        JLabel playlist1OwnerLabel = new JLabel("Playlist 1 Owner:");
+        playlist1OwnerField = new JTextField();
+
+        JLabel playlist2NameLabel = new JLabel("Playlist 2 Name:");
+        playlist2NameField = new JTextField();
+        JLabel playlist2OwnerLabel = new JLabel("Playlist 2 Owner:");
+        playlist2OwnerField = new JTextField();
+
+        // Initialize Submit and Back buttons
+        submitButton = new JButton("Submit");
+        JButton backButton = new JButton("Go Back");
+
+        // Add components to the comparison panel
+        add(playlist1NameLabel);
+        add(playlist1NameField);
+        add(playlist1OwnerLabel);
+        add(playlist1OwnerField);
+
+        add(playlist2NameLabel);
+        add(playlist2NameField);
+        add(playlist2OwnerLabel);
+        add(playlist2OwnerField);
+
+        add(new JLabel()); // Empty cell for alignment
+        add(submitButton);
+
+        add(new JLabel()); // Empty cell for alignment
+        add(backButton);
+
+        // Add action listener for the submit button
+        submitButton.addActionListener(new ActionListener() {
             @Override
-            public void changedUpdate(DocumentEvent e) {
-                documentListenerHelper();
+            public void actionPerformed(ActionEvent e) {
+                processPlaylistComparison();
             }
         });
 
-        changePassword.addActionListener(
-                // This creates an anonymous subclass of ActionListener and instantiates it.
-                evt -> {
-                    if (evt.getSource().equals(changePassword)) {
-                        final LoggedInState currentState = loggedInViewModel.getState();
-
-                        this.changePasswordController.execute(
-                                currentState.getUsername(),
-                                currentState.getPassword()
-                        );
-                    }
-                }
-        );
-
-        logOut.addActionListener(
-                // This creates an anonymous subclass of ActionListener and instantiates it.
-                evt -> {
-                    if (evt.getSource().equals(logOut)) {
-                        // TODO: execute the logout use case through the Controller
-                        // 1. get the state out of the loggedInViewModel. It contains the username.
-                        final LoggedInState currentState = loggedInViewModel.getState();
-
-                        // 2. Execute the logout Controller.
-                        logoutController.execute(currentState.getUsername());
-                    }
-                }
-        );
-
-        this.add(title);
-        this.add(usernameInfo);
-        this.add(username);
-
-        this.add(passwordInfo);
-        this.add(passwordErrorField);
-        this.add(buttons);
+        // Add action listener for the back button
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                switchToMainPanel(); // Reinitialize the main panel
+            }
+        });
     }
 
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        if (evt.getPropertyName().equals("state")) {
-            final LoggedInState state = (LoggedInState) evt.getNewValue();
-            username.setText(state.getUsername());
-        }
-        else if (evt.getPropertyName().equals("password")) {
-            final LoggedInState state = (LoggedInState) evt.getNewValue();
-            JOptionPane.showMessageDialog(null, "password updated for " + state.getUsername());
+    /**
+     * Processes the playlist comparison by sending user inputs to the Controller.
+     */
+    private void processPlaylistComparison() {
+        String playlist1Name = playlist1NameField.getText().trim();
+        String playlist1Owner = playlist1OwnerField.getText().trim();
+        String playlist2Name = playlist2NameField.getText().trim();
+        String playlist2Owner = playlist2OwnerField.getText().trim();
+
+        if (playlist1Name.isEmpty() || playlist1Owner.isEmpty() ||
+                playlist2Name.isEmpty() || playlist2Owner.isEmpty()) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Please fill in all fields!",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+            return;
         }
 
+        if (playlistSimilarityController != null) {
+            playlistSimilarityController.comparePlaylists(
+                    playlist1Name,
+                    playlist1Owner,
+                    playlist2Name,
+                    playlist2Owner
+            );
+
+            cardLayout.show(cardPanel, "Similarity Score Panel");
+        }
     }
+
+    /**
+     * Switches back to the main panel state (buttons view).
+     */
+    public void switchToMainPanel() {
+        initializeMainPanel(); // Reinitialize the main panel
+    }
+
+    public void setPlaylistSimilarityController(PlaylistSimilarityController playlistSimilarityController) {
+        this.playlistSimilarityController = playlistSimilarityController;
+    }
+
 
     public String getViewName() {
         return viewName;
     }
 
-    public void setChangePasswordController(ChangePasswordController changePasswordController) {
-        this.changePasswordController = changePasswordController;
+    public void setTopSongsActionListener(ActionListener actionListener) {
+        topSongsButton.addActionListener(actionListener);
     }
 
-    public void setLogoutController(LogoutController logoutController) {
-        this.logoutController = logoutController;
+    public void setGenreDistributionActionListener(ActionListener actionListener) {
+        genreDistribution.addActionListener(actionListener);
+    }
+
+    public void setTopArtistsController(TopArtistsController topArtistsController) {
+        this.topArtistsController = topArtistsController;
+    }
+
+    public void setTopArtistsPresenter(TopArtistsPresenter topArtistsPresenter) {
+        this.topArtistsPresenter = topArtistsPresenter;
+    }
+
+    public void setSongRecommendController(SongRecommendController songRecommendController) {
+        this.songRecommendController = songRecommendController;
+    }
+
+    public void setSongRecommendPresenter(SongRecommendPresenter songRecommendPresenter) {
+        this.songRecommendPresenter = songRecommendPresenter;
+    }
+
+    public void setTempoAnalyserController(TempoAnalyserController tempoAnalyserController) {
+        this.tempoAnalyserController = tempoAnalyserController;
+    }
+
+    public void setTempoAnalyserPresenter(TempoAnalyserPresenter tempoAnalyserPresenter) {
+        this.tempoAnalyserPresenter = tempoAnalyserPresenter;
+    }
+
+    public void setTempoAnalyserActionListener(ActionListener listener) {
+        tempoAnalyserButton.addActionListener(listener);
     }
 }
