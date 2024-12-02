@@ -41,6 +41,7 @@ public class AppBuilder2 {
     private SongRecommendController songRecommendController;
     private SongRecommendPresenter songRecommendPresenter;
     private SongRecommendViewModel songRecommendViewModel;
+    private JFrame application;
 
     public AppBuilder2() {
         cardPanel.setLayout(cardLayout);
@@ -78,7 +79,16 @@ public class AppBuilder2 {
 
         viewManagerModel.addPropertyChangeListener(evt -> {
             if ("state".equals(evt.getPropertyName())) {
-                cardLayout.show(cardPanel, evt.getNewValue().toString());
+                String newState = evt.getNewValue().toString();
+                cardLayout.show(cardPanel, newState);
+
+                // Adjust the frame size dynamically based on the current view
+                if ("login".equals(newState)) {
+                    application.setSize(400, 300); // Adjust frame size for LoginView
+                } else {
+                    application.setSize(1200, 800); // Adjust frame size for other views
+                }
+                application.setLocationRelativeTo(null); // Center the frame
             }
         });
         return this;
@@ -157,11 +167,11 @@ public class AppBuilder2 {
     }
 
     public JFrame build() {
-        JFrame application = new JFrame("Spotilyze");
+        application = new JFrame("Spotilyze");
         application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         application.add(cardPanel);
         cardLayout.show(cardPanel, loginView2.getViewName());
-        application.setSize(1200, 800);
+        application.setSize(400, 300);
         return application;
     }
 }
