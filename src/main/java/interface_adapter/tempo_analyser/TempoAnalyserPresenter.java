@@ -9,14 +9,15 @@ public class TempoAnalyserPresenter implements TempoAnalyserOutputBoundary {
     private Map<String, Integer> tempoAnalysis;
 
     @Override
-    public void presentTempoAnalysis(Map<String, Integer> analysis) {
+    public void presentTempoAnalysis(Map<String, Integer> tempoCategories) {
+        this.tempoAnalysis = tempoCategories;
         this.errorMessage = null;
-        this.tempoAnalysis = analysis;
     }
 
     @Override
-    public void handleError(String error) {
-        this.errorMessage = error;
+    public void handleError(String errorMessage) {
+        this.errorMessage = errorMessage;
+        this.tempoAnalysis = null;
     }
 
     public String getErrorMessage() {
