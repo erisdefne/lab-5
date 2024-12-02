@@ -15,25 +15,25 @@ public class TopArtistsInteractor implements TopArtistsInputBoundary {
     private static final String TOP_ARTISTS_URL = "https://api.spotify.com/v1/me/top/artists";
 
     private final TopArtistsOutputBoundary outputBoundary;
-    private final CurrentUser currentUser; // Dependency for accessing the token
+    private final CurrentUser currentUser;
 
     public TopArtistsInteractor(TopArtistsOutputBoundary outputBoundary, CurrentUser currentUser) {
         this.outputBoundary = outputBoundary;
-        this.currentUser = currentUser; // Pass CurrentUser to retrieve the token
+        this.currentUser = currentUser;
     }
 
     @Override
     public void fetchTopArtists(String timeRange, int limit) {
         try {
             // Build the API URL
-            String url = TOP_ARTISTS_URL + "?time_range=" + timeRange + "&limit=" + limit;
+            final String url = TOP_ARTISTS_URL + "?time_range=" + timeRange + "&limit=" + limit;
 
             // Fetch data using DataGetterClass
-            JsonNode data = DataGetterClass.getData(url, currentUser);
+            final JsonNode data = DataGetterClass.getData(url, currentUser);
 
             // Parse artist names
-            List<String> topArtists = new ArrayList<>();
-            JsonNode items = data.get("items");
+            final List<String> topArtists = new ArrayList<>();
+            final JsonNode items = data.get("items");
             if (items != null) {
                 for (JsonNode artist : items) {
                     topArtists.add(artist.get("name").asText());
@@ -43,8 +43,9 @@ public class TopArtistsInteractor implements TopArtistsInputBoundary {
             // Return results to the output boundary
             outputBoundary.presentTopArtists(topArtists);
 
-        } catch (IOException e) {
-            outputBoundary.handleError("Failed to fetch top artists: " + e.getMessage());
+        }
+        catch (IOException excep) {
+            outputBoundary.handleError("Failed to fetch top artists: " + excep.getMessage());
         }
     }
 }

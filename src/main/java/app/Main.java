@@ -9,8 +9,10 @@ public class Main {
 
         JFrame application = appBuilder2
                 .addLoginView()
+                .addTopArtistsUseCase()
                 .addLoggedInView()
                 .addLoginUseCase()
+                .addSongRecommendUseCase()
                 .addTopSongsUseCase()
                 .addGenreDistributionUseCase()
                 .build();
