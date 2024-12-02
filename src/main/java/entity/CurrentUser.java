@@ -1,10 +1,21 @@
 package entity;
 
 public class CurrentUser {
-    private static String accessToken;
-    private static String topSongs;
+    private static CurrentUser instance;
+    private String accessToken;
 
-    public static String getAccessToken() {
+    public CurrentUser() {
+        // Private constructor to prevent instantiation
+    }
+
+    public static CurrentUser getInstance() {
+        if (instance == null) {
+            instance = new CurrentUser();
+        }
+        return instance;
+    }
+
+    public String getAccessToken() {
         return accessToken;
     }
 
