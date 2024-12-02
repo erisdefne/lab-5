@@ -31,7 +31,7 @@ Spotilyze is a powerful tool that connects to your Spotify account and provides 
     - Compare your playlist with a friend’s to find out how similar they are, presented as a percentage similarity score.
 
 6. **Music Recommendations**
-    - Discover new songs based on your most popular genres. Recommendations are tailored to your taste but exclude songs already in your playlists.
+    - Discover new songs based on your most popular genres. Recommendations are tailored to your taste but exclude songs already listened to in the past recent while.
 
 ---
 
