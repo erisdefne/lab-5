@@ -12,16 +12,21 @@ public class LoggedInView extends JPanel {
     private final String viewName = "logged in";
     private final JButton genreDistribution;
     private final JButton topSongsButton;
+    private final JButton tempoAnalyserButton;
 
     public LoggedInView() {
-        setLayout(new GridLayout(3, 2, 10, 10)); // 3 rows, 2 columns with gaps
+        setLayout(new GridLayout(3, 2, 10, 10));
 
         // Initialize and add buttons
         genreDistribution = new JButton("GenreDistribution");
         add(genreDistribution);
+
         topSongsButton = new JButton("TopSongs");
         add(topSongsButton);
-        add(new JButton("3"));
+
+        tempoAnalyserButton = new JButton("Tempo Analyser");
+        add(tempoAnalyserButton);
+
         add(new JButton("4"));
         add(new JButton("5"));
         add(new JButton("6"));
@@ -45,5 +50,13 @@ public class LoggedInView extends JPanel {
      */
     public void setGenreDistributionActionListener(ActionListener actionListener) {
         genreDistribution.addActionListener(actionListener);
+    }
+
+    /**
+     * Sets the action listener for the "Tempo Analyser" button.
+     * @param actionListener the ActionListener to handle button clicks
+     */
+    public void setTempoAnalyserActionListener(ActionListener actionListener) {
+        tempoAnalyserButton.addActionListener(actionListener);
     }
 }
