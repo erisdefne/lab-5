@@ -11,7 +11,6 @@ public class TempoAnalyserView extends JPanel {
     private TempoAnalyserController controller;
     private TempoAnalyserPresenter presenter;
     private final JButton goBackButton;
-    private final JButton analyseButton;
 
     public TempoAnalyserView() {
         setLayout(new BorderLayout());
@@ -19,14 +18,14 @@ public class TempoAnalyserView extends JPanel {
         JLabel title = new JLabel("Tempo Analyser");
         title.setHorizontalAlignment(SwingConstants.CENTER);
 
-        analyseButton = new JButton("Analyse Tempo");
+        JButton analyseButton = new JButton("Analyse Tempo");
         analyseButton.addActionListener(e -> {
             if (controller != null) {
-                System.out.println("Analyse Tempo button clicked!"); // Debugging statement
-                controller.analyseTempo("medium_term", 10); // Trigger tempo analysis
-                displayResults(); // Display the results after analysis
-            } else {
-                System.out.println("Controller is null!"); // Debugging statement
+                controller.analyseTempo("medium_term", 10);
+                displayResults();
+            }
+            else {
+                JOptionPane.showMessageDialog(this, "Controller is not set.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
