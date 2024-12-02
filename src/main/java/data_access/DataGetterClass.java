@@ -15,8 +15,7 @@ public class DataGetterClass {
 
     public static JsonNode getData(String queryUrl, CurrentUser currentUser) throws IOException {
         // Construct the query URL
-        String token = currentUser.getAccessToken();
-
+        final String token = currentUser.getAccessToken();
 
         //LoginClass.getAccess_token();
         //String queryUrl = SEARCH_URL + userName (for getting user info)
