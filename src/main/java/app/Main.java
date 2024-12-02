@@ -15,6 +15,8 @@ public class Main {
                 .addSongRecommendUseCase()
                 .addTopSongsUseCase()
                 .addGenreDistributionUseCase()
+                .addSimilarityScorePanel()
+                .addComparePlaylistsUseCase()
                 .addTempoAnalyserUseCase()
                 .build();
 
