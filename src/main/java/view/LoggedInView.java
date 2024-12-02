@@ -152,19 +152,30 @@ public class LoggedInView extends JPanel {
         if (topArtistsPresenter != null) {
             String errorMessage = topArtistsPresenter.getErrorMessage();
             if (errorMessage != null) {
+                // Display error in a dialog
                 JOptionPane.showMessageDialog(this, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
             } else {
                 List<String> topArtists = topArtistsPresenter.getTopArtists();
                 if (topArtists != null && !topArtists.isEmpty()) {
-                    StringBuilder message = new StringBuilder("<html><body>");
-                    message.append("<h2>Your Top Artists</h2><ul>");
-                    for (String artist : topArtists) {
-                        message.append("<li>").append(artist).append("</li>");
+                    // Enhanced formatting and display
+                    StringBuilder message = new StringBuilder("<html><body style='background-color: #d4f0f8; font-size: 16px;'>");
+                    message.append("<h2 style='text-align: left;'>Spotilyze Results: Your Top Artists Ranked by Play Count</h2>");
+                    message.append("<ol style='text-align: left; padding-left: 20px;'>");
+                    for (int i = 0; i < topArtists.size(); i++) {
+                        message.append("<li>").append(topArtists.get(i)).append("</li>");
                     }
-                    message.append("</ul></body></html>");
-                    JOptionPane.showMessageDialog(this, message.toString(), "Top Artists", JOptionPane.INFORMATION_MESSAGE);
+                    message.append("</ol></body></html>");
+
+                    JLabel label = new JLabel(message.toString());
+                    label.setOpaque(true);
+                    label.setBackground(new java.awt.Color(212, 240, 248));
+                    label.setPreferredSize(new java.awt.Dimension(1000, 500));
+                    label.setHorizontalAlignment(JLabel.LEFT);
+
+                    // Display the JLabel in a JOptionPane
+                    JOptionPane.showMessageDialog(this, label, "Spotilyze: Top Artists", JOptionPane.INFORMATION_MESSAGE);
                 } else {
-                    JOptionPane.showMessageDialog(this, "No top artists found.", "Top Artists", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "No top artists found.", "Spotilyze: Top Artists", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         }
