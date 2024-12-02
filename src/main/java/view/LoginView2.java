@@ -1,57 +1,69 @@
 package view;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import javax.swing.*;
 import interface_adapter.login.LoginController2;
 import interface_adapter.login.LoginViewModel2;
 
+/**
+ * The View for when the user is logging into the program.
+ */
 public class LoginView2 extends JPanel implements ActionListener, PropertyChangeListener {
 
     private final String viewName = "login";
     private final LoginViewModel2 loginViewModel2;
     private final JButton loginButton;
     private LoginController2 loginController2;
-    private final JTextField usernameField;
-    private final JPasswordField passwordField;
 
     public LoginView2(LoginViewModel2 loginViewModel2) {
         this.loginViewModel2 = loginViewModel2;
         this.loginViewModel2.addPropertyChangeListener(this);
 
-        JLabel title = new JLabel("Login Screen");
-        title.setHorizontalAlignment(SwingConstants.CENTER);
+        // Set up layout manager
+        setLayout(new BorderLayout());
 
-        usernameField = new JTextField(20);
-        passwordField = new JPasswordField(20);
+        // Create a central panel for all components
+        JPanel centerPanel = new JPanel();
+        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
+        centerPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        centerPanel.setAlignmentY(Component.CENTER_ALIGNMENT);
 
-        JLabel usernameLabel = new JLabel("Username:");
-        JLabel passwordLabel = new JLabel("Password:");
+        // App Title
+        JLabel title = new JLabel("Spotilyze");
+        title.setFont(new Font("Arial", Font.BOLD, 40));
+        title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JPanel formPanel = new JPanel(new GridLayout(2, 2));
-        formPanel.add(usernameLabel);
-        formPanel.add(usernameField);
-        formPanel.add(passwordLabel);
-        formPanel.add(passwordField);
+        // Subtitle
+        JLabel subtitle = new JLabel("Log in to your Spotify account!");
+        subtitle.setFont(new Font("Arial", Font.ITALIC, 18));
+        subtitle.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        // Login Button
         loginButton = new JButton("Log In");
+        loginButton.setFont(new Font("Arial", Font.PLAIN, 16));
+        loginButton.setPreferredSize(new Dimension(100, 30)); // Set button size to 100x30 pixels
+        loginButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         loginButton.addActionListener(this);
 
-        setLayout(new BorderLayout());
-        add(title, BorderLayout.NORTH);
-        add(formPanel, BorderLayout.CENTER);
-        add(loginButton, BorderLayout.SOUTH);
+        // Add components to the central panel
+        centerPanel.add(Box.createVerticalGlue()); // Add space before title
+        centerPanel.add(title);
+        centerPanel.add(Box.createRigidArea(new Dimension(0, 10))); // Add space between title and subtitle
+        centerPanel.add(subtitle);
+        centerPanel.add(Box.createRigidArea(new Dimension(0, 20))); // Add space between subtitle and button
+        centerPanel.add(loginButton);
+        centerPanel.add(Box.createVerticalGlue()); // Add space after button
+
+        // Add central panel to the main layout
+        add(centerPanel, BorderLayout.CENTER);
     }
 
     public String getViewName() {
         return viewName;
-    }
-
-    public LoginViewModel2 getLoginViewModel() {
-        return loginViewModel2;
     }
 
     public void setLoginController(LoginController2 loginController2) {
@@ -61,26 +73,14 @@ public class LoginView2 extends JPanel implements ActionListener, PropertyChange
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == loginButton) {
-            final String username = usernameField.getText();
-            final String password = new String(passwordField.getPassword());
-            if (username.isEmpty() || password.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Username or Password cannot be empty!", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-            else {
-                loginController2.execute(username, password);
-            }
+            loginController2.execute();
         }
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        if ("state".equals(evt.getPropertyName())) {
-            if ("logged in".equals(evt.getNewValue())) {
-                JOptionPane.showMessageDialog(this, "Login successful! Switching to the logged-in view.");
-            }
-            else if ("error".equals(evt.getNewValue())) {
-                JOptionPane.showMessageDialog(this, "Login failed. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
-            }
+        if ("state".equals(evt.getPropertyName()) && "logged in".equals(evt.getNewValue())) {
+            JOptionPane.showMessageDialog(this, "Login successful! Switching to the logged-in view.");
         }
     }
 }
