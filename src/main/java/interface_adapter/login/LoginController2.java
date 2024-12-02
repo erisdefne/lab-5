@@ -1,18 +1,21 @@
 
 package interface_adapter.login;
 
-import use_case.login.LoginInputBoundary;
 import use_case.login.LoginInputData2;
+import use_case.login.LoginInteractor2;
+
+
 
 public class LoginController2 {
-    private final LoginInputBoundary loginInputBoundary;
 
-    public LoginController2(LoginInputBoundary loginInputBoundary) {
-        this.loginInputBoundary = loginInputBoundary;
+    private final LoginInteractor2 loginInteractor2;
+
+    public LoginController2(LoginInteractor2 loginInteractor2) {
+        this.loginInteractor2 = loginInteractor2;
     }
 
-    public void execute(String username, String password) {
-        LoginInputData2 inputData = new LoginInputData2(username, password);
-        loginInputBoundary.login(inputData);
+    public void execute() {
+        LoginInputData2 inputData = new LoginInputData2();
+        loginInteractor2.execute(inputData);
     }
 }

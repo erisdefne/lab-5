@@ -1,11 +1,12 @@
 package entity;
 
 public class CurrentUser {
+    private static String accessToken;
+    private static String topSongs;
     private static CurrentUser instance;
-    private String accessToken;
 
-    public CurrentUser() {
-        // Private constructor to prevent instantiation
+    public static String getAccessToken() {
+        return accessToken;
     }
 
     public static CurrentUser getInstance() {
@@ -13,10 +14,6 @@ public class CurrentUser {
             instance = new CurrentUser();
         }
         return instance;
-    }
-
-    public String getAccessToken() {
-        return accessToken;
     }
 
     public void setAccessToken(String accessToken) {

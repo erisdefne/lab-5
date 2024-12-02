@@ -1,19 +1,18 @@
 package use_case.login;
 
+/**
+ * The Input Data for the Login Use Case.
+ */
 public class LoginInputData2 {
-    private final String username;
-    private final String password;
 
-    public LoginInputData2(String username, String password) {
-        this.username = username;
-        this.password = password;
+    private final String access_token;
+
+    public LoginInputData2() {
+        this.access_token = null;
     }
 
-    public String getUsername() {
-        return username;
+    String getToken() {
+        return access_token;
     }
 
-    public String getPassword() {
-        return password;
-    }
 }
