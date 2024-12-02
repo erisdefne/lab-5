@@ -15,11 +15,11 @@ public class Main {
                 .addSongRecommendUseCase()
                 .addTopSongsUseCase()
                 .addGenreDistributionUseCase()
+                .addTempoAnalyserUseCase()
                 .build();
 
         application.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         application.setLocationRelativeTo(null);
-
         application.setVisible(true);
     }
 }

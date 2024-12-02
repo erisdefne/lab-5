@@ -5,42 +5,39 @@ import interface_adapter.tempo_analyser.TempoAnalyserPresenter;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Arrays;
+import java.awt.event.ActionListener;
 
 public class TempoAnalyserView extends JPanel {
-
     private TempoAnalyserController controller;
     private TempoAnalyserPresenter presenter;
+    private final JButton goBackButton;
+    private final JButton analyseButton;
 
     public TempoAnalyserView() {
         setLayout(new BorderLayout());
 
-        final JLabel title = new JLabel("Tempo Analyser");
+        JLabel title = new JLabel("Tempo Analyser");
         title.setHorizontalAlignment(SwingConstants.CENTER);
 
-        final JButton analyseButton = new JButton("Analyse Tempo");
+        analyseButton = new JButton("Analyse Tempo");
         analyseButton.addActionListener(e -> {
             if (controller != null) {
-                controller.analyseTempo(Arrays.asList(80.0, 95.0, 130.0));
-                displayResults();
+                System.out.println("Analyse Tempo button clicked!"); // Debugging statement
+                controller.analyseTempo("medium_term", 10); // Trigger tempo analysis
+                displayResults(); // Display the results after analysis
+            } else {
+                System.out.println("Controller is null!"); // Debugging statement
             }
         });
 
-        add(title, BorderLayout.NORTH);
-        add(analyseButton, BorderLayout.CENTER);
-    }
+        goBackButton = new JButton("Go Back");
 
-    private void displayResults() {
-        if (presenter != null) {
-            final String message;
-            if (presenter.getErrorMessage() != null) {
-                message = presenter.getErrorMessage();
-            }
-            else {
-                message = presenter.getTempoAnalysis().toString();
-            }
-            JOptionPane.showMessageDialog(this, message, "Tempo Analysis", JOptionPane.INFORMATION_MESSAGE);
-        }
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(analyseButton);
+        buttonPanel.add(goBackButton);
+
+        add(title, BorderLayout.NORTH);
+        add(buttonPanel, BorderLayout.CENTER);
     }
 
     public void setController(TempoAnalyserController controller) {
@@ -49,5 +46,23 @@ public class TempoAnalyserView extends JPanel {
 
     public void setPresenter(TempoAnalyserPresenter presenter) {
         this.presenter = presenter;
+    }
+
+    public void setGoBackButtonListener(ActionListener listener) {
+        goBackButton.addActionListener(listener);
+    }
+
+    private void displayResults() {
+        if (presenter != null) {
+            String errorMessage = presenter.getErrorMessage();
+            if (errorMessage != null) {
+                JOptionPane.showMessageDialog(this, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                StringBuilder message = new StringBuilder("Tempo Analysis Results:\n");
+                presenter.getTempoAnalysis().forEach((category, count) ->
+                        message.append(category).append(": ").append(count).append("\n"));
+                JOptionPane.showMessageDialog(this, message.toString(), "Results", JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
     }
 }

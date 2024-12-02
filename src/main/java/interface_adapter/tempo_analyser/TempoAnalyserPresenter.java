@@ -5,27 +5,25 @@ import use_case.TempoAnalyser.TempoAnalyserOutputBoundary;
 import java.util.Map;
 
 public class TempoAnalyserPresenter implements TempoAnalyserOutputBoundary {
-
-    private Map<String, Integer> tempoAnalysis;
     private String errorMessage;
+    private Map<String, Integer> tempoAnalysis;
 
     @Override
-    public void presentTempoAnalysis(Map<String, Integer> tempoCategories) {
-        this.tempoAnalysis = tempoCategories;
+    public void presentTempoAnalysis(Map<String, Integer> analysis) {
         this.errorMessage = null;
+        this.tempoAnalysis = analysis;
     }
 
     @Override
-    public void handleError(String errorMessage) {
-        this.errorMessage = errorMessage;
-        this.tempoAnalysis = null;
-    }
-
-    public Map<String, Integer> getTempoAnalysis() {
-        return tempoAnalysis;
+    public void handleError(String error) {
+        this.errorMessage = error;
     }
 
     public String getErrorMessage() {
         return errorMessage;
+    }
+
+    public Map<String, Integer> getTempoAnalysis() {
+        return tempoAnalysis;
     }
 }

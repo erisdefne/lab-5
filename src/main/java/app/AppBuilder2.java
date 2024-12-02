@@ -13,28 +13,27 @@ import interface_adapter.login.LoginPresenter2;
 import interface_adapter.song_recommend.SongRecommendController;
 import interface_adapter.song_recommend.SongRecommendPresenter;
 import interface_adapter.login.LoginViewModel2;
+import interface_adapter.tempo_analyser.TempoAnalyserController;
+import interface_adapter.tempo_analyser.TempoAnalyserPresenter;
 import interface_adapter.top_songs.TopSongsController;
 import interface_adapter.top_songs.TopSongsPresenter;
 import interface_adapter.top_songs.TopSongsViewModel;
+import use_case.TempoAnalyser.TempoAnalyserInteractor;
 import use_case.genre_distribution.GenreDistributionInteractor;
 import interface_adapter.top_artists.TopArtistsController;
 import interface_adapter.top_artists.TopArtistsPresenter;
 import interface_adapter.song_recommend.SongRecommendViewModel;
 import use_case.login.LoginInteractor2;
 import use_case.topsongs.TopSongsInteractor;
-import view.GenreDistributionView;
+import view.*;
 import use_case.top_artists.TopArtistsInteractor;
 import use_case.song_recommend.SongRecommendInteractor;
-import view.LoginView2;
-import view.LoggedInView;
-import view.TopSongsView;
 
 public class AppBuilder2 {
 
     private final JPanel cardPanel = new JPanel();
     private final CardLayout cardLayout = new CardLayout();
     private final ViewManagerModel viewManagerModel = new ViewManagerModel();
-    private LoginViewModel2 loginViewModel2;
     private LoginView2 loginView2;
     private LoggedInView loggedInView;
     private final CurrentUser currentUser = new CurrentUser();
@@ -48,25 +47,22 @@ public class AppBuilder2 {
     }
 
     public AppBuilder2 addLoginView() {
-        loginViewModel2 = new LoginViewModel2();
+        LoginViewModel2 loginViewModel2 = new LoginViewModel2();
         loginView2 = new LoginView2(loginViewModel2);
         cardPanel.add(loginView2, loginView2.getViewName());
         return this;
     }
 
     public AppBuilder2 addLoggedInView() {
-        if (topArtistsController == null) {
-            System.out.println("Warning: TopArtistsController is null in addLoggedInView!");
-        }
-        if (topArtistsPresenter == null) {
-            System.out.println("Warning: TopArtistsPresenter is null in addLoggedInView!");
-        }
-
         loggedInView = new LoggedInView();
-        loggedInView.setTopArtistsController(topArtistsController); // Wire the controller
-        loggedInView.setTopArtistsPresenter(topArtistsPresenter);   // Wire the presenter
-        loggedInView.setSongRecommendController(songRecommendController); // Wire the controller
-        loggedInView.setSongRecommendPresenter(songRecommendPresenter);
+        if (topArtistsController != null && topArtistsPresenter != null) {
+            loggedInView.setTopArtistsController(topArtistsController);
+            loggedInView.setTopArtistsPresenter(topArtistsPresenter);
+        }
+        if (songRecommendController != null && songRecommendPresenter != null) {
+            loggedInView.setSongRecommendController(songRecommendController);
+            loggedInView.setSongRecommendPresenter(songRecommendPresenter);
+        }
         cardPanel.add(loggedInView, loggedInView.getViewName());
         return this;
     }
@@ -84,11 +80,11 @@ public class AppBuilder2 {
 
                 // Adjust the frame size dynamically based on the current view
                 if ("login".equals(newState)) {
-                    application.setSize(400, 300); // Adjust frame size for LoginView
+                    application.setSize(400, 300);
                 } else {
-                    application.setSize(1200, 800); // Adjust frame size for other views
+                    application.setSize(1200, 800);
                 }
-                application.setLocationRelativeTo(null); // Center the frame
+                application.setLocationRelativeTo(null);
             }
         });
         return this;
@@ -112,22 +108,14 @@ public class AppBuilder2 {
 
         TopSongsView topSongsView = new TopSongsView();
 
-        // Set up the action listener for the "TopSongs" button in LoggedInView
         loggedInView.setTopSongsActionListener(e -> {
-            // Fetch the top songs
             topSongsController.execute(currentUser);
-            // Update the view with the fetched data
             topSongsView.updateView(topSongsViewModel);
-            // Display the TopSongsView
             cardPanel.add(topSongsView, "topSongs");
             cardLayout.show(cardPanel, "topSongs");
         });
 
-        // Set up the "Go Back" button in TopSongsView
-        topSongsView.setGoBackButtonListener(e -> {
-            // Show the LoggedInView when "Go Back" is clicked
-            cardLayout.show(cardPanel, loggedInView.getViewName());
-        });
+        topSongsView.setGoBackButtonListener(e -> cardLayout.show(cardPanel, loggedInView.getViewName()));
 
         return this;
     }
@@ -139,7 +127,6 @@ public class AppBuilder2 {
         GenreDistributionController controller = new GenreDistributionController(interactor);
         GenreDistributionView view = new GenreDistributionView();
 
-        // Set up the action listener for "View Genre Distribution"
         loggedInView.setGenreDistributionActionListener(e -> {
             controller.fetchAndPresentGenreDistribution(currentUser);
             view.updateView(viewModel);
@@ -147,14 +134,11 @@ public class AppBuilder2 {
             cardLayout.show(cardPanel, "genreDistribution");
         });
 
-        // Set up the "Go Back" button in TopSongsView
-        view.setGoBackButtonListener(e -> {
-            // Show the LoggedInView when "Go Back" is clicked
-            cardLayout.show(cardPanel, loggedInView.getViewName());
-        });
+        view.setGoBackButtonListener(e -> cardLayout.show(cardPanel, loggedInView.getViewName()));
 
         return this;
     }
+
     public AppBuilder2 addSongRecommendUseCase() {
         SongRecommendViewModel viewModel = new SongRecommendViewModel();
         SongRecommendPresenter presenter = new SongRecommendPresenter(viewManagerModel, viewModel);
@@ -163,6 +147,25 @@ public class AppBuilder2 {
 
         loggedInView.setSongRecommendController(controller);
         loggedInView.setSongRecommendPresenter(presenter);
+        return this;
+    }
+
+    public AppBuilder2 addTempoAnalyserUseCase() {
+        TempoAnalyserPresenter presenter = new TempoAnalyserPresenter();
+        TempoAnalyserInteractor interactor = new TempoAnalyserInteractor(presenter);
+        TempoAnalyserController controller = new TempoAnalyserController(interactor);
+
+        TempoAnalyserView view = new TempoAnalyserView();
+        view.setController(controller);
+        view.setPresenter(presenter);
+
+        view.setGoBackButtonListener(e -> cardLayout.show(cardPanel, loggedInView.getViewName()));
+
+        loggedInView.setTempoAnalyserActionListener(e -> {
+            cardPanel.add(view, "tempoAnalyser");
+            cardLayout.show(cardPanel, "tempoAnalyser");
+        });
+
         return this;
     }
 
