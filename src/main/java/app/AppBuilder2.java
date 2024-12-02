@@ -64,8 +64,8 @@ public class AppBuilder2 {
     }
 
     public AppBuilder2 addSimilarityScorePanel() {
-        similarityScorePanel = new SimilarityScorePanel();
-        cardPanel.add(similarityScorePanel, "Similarity Score Panel"); // Add SimilarityScorePanel to the CardLayout
+        similarityScorePanel = new SimilarityScorePanel(cardPanel, cardLayout, loggedInView); // Pass loggedInView
+        cardPanel.add(similarityScorePanel, "Similarity Score Panel");
         return this;
     }
 

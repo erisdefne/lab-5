@@ -9,7 +9,8 @@ import java.awt.event.ActionListener;
 
 public class LoggedInView extends JPanel {
 
-    private final String viewName = "logged in";
+    private static final String viewName = "logged in"; // Universal name for this view
+    private boolean isMainPanel = true;         // Tracks whether we're in the main panel or comparison panel
 
     // Buttons for different functionalities
     private JButton genreDistributionButton;
@@ -18,7 +19,7 @@ public class LoggedInView extends JPanel {
     private JButton recommendSongsButton;
     private JButton comparePlaylistsButton;
 
-    // Text fields for user input (only shown after "Compare Playlists" button is clicked)
+    // Text fields for user input
     private JTextField playlist1NameField;
     private JTextField playlist1OwnerField;
     private JTextField playlist2NameField;
@@ -36,7 +37,18 @@ public class LoggedInView extends JPanel {
         this.cardPanel = cardPanel;
         this.cardLayout = cardLayout;
 
+        // Start in the main panel state
         setLayout(new GridLayout(4, 2, 10, 10)); // 4 rows, 2 columns with gaps
+        initializeMainPanel();                  // Load the main panel view
+    }
+
+    // Main panel initialization
+    private void initializeMainPanel() {
+        removeAll();
+        revalidate();
+        repaint();
+
+        isMainPanel = true; // Mark this as the main panel state
 
         // Initialize buttons
         genreDistributionButton = new JButton("Genre Distribution");
@@ -45,7 +57,7 @@ public class LoggedInView extends JPanel {
         recommendSongsButton = new JButton("Recommend Songs");
         comparePlaylistsButton = new JButton("Compare Playlists");
 
-        // Add initial buttons to the panel
+        // Add buttons to the main panel
         add(genreDistributionButton);
         add(topSongsButton);
         add(topArtistsButton);
@@ -66,10 +78,11 @@ public class LoggedInView extends JPanel {
      * This method is triggered when the "Compare Playlists" button is clicked.
      */
     private void showPlaylistComparisonInputs() {
-        // Clear the panel to show new inputs
         removeAll();
         revalidate();
         repaint();
+
+        isMainPanel = false; // Mark this as the comparison panel state
 
         setLayout(new GridLayout(6, 2, 10, 10)); // Adjust layout for input fields
 
@@ -87,7 +100,7 @@ public class LoggedInView extends JPanel {
         // Initialize submit button
         submitButton = new JButton("Submit");
 
-        // Add components to the panel
+        // Add components to the comparison panel
         add(playlist1NameLabel);
         add(playlist1NameField);
         add(playlist1OwnerLabel);
@@ -131,7 +144,6 @@ public class LoggedInView extends JPanel {
         }
 
         if (playlistSimilarityController != null) {
-            // Trigger comparison through the controller
             playlistSimilarityController.comparePlaylists(
                     playlist1Name,
                     playlist1Owner,
@@ -139,16 +151,21 @@ public class LoggedInView extends JPanel {
                     playlist2Owner
             );
 
-            // Switch to the panel that shows the similarity score
             cardLayout.show(cardPanel, "Similarity Score Panel");
         }
     }
 
-    public String getViewName() {
-        return viewName;
+    /**
+     * Switches back to the main panel state (buttons view).
+     */
+    public void switchToMainPanel() {
+        initializeMainPanel();
     }
 
-    // Setter for PlaylistSimilarityController
+    public static String getViewName() {
+        return viewName; // The universal name for this view
+    }
+
     public void setPlaylistSimilarityController(PlaylistSimilarityController playlistSimilarityController) {
         this.playlistSimilarityController = playlistSimilarityController;
     }
