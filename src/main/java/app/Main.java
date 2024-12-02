@@ -23,5 +23,6 @@ public class Main {
         application.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         application.setLocationRelativeTo(null);
         application.setVisible(true);
+
     }
 }

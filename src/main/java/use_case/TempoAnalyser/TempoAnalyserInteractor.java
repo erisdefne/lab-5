@@ -16,6 +16,7 @@ public class TempoAnalyserInteractor implements TempoAnalyserInputBoundary {
         this.presenter = presenter;
     }
 
+
     @Override
     public void analyseTempo(String timeRange, int limit) {
         Map<String, Integer> tempoCategories = new HashMap<>();
