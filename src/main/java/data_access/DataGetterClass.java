@@ -23,7 +23,7 @@ public class DataGetterClass {
         //https://api.spotify.com/v1/me
 
         // Set up the connection
-        URL url = new URL(queryUrl);
+        URL url = new URL(queryUrl); //queryUrl
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Authorization", "Bearer " + token);
@@ -54,15 +54,8 @@ public class DataGetterClass {
     }
 
 //    public static void main(String[] args) {
-//        System.out.println(LoginClass.getAccess_token());
 //        try { // Replace with actual token from getToken()
-//            String userName = "me"; // Replace with the user's name
-//            if (userName.equals("me")) {
-//                searchUser(userName);
-//            }
-//            else {
-//                searchUser("users/" + userName);
-//            }
+//            System.out.println(getData("https://api.spotify.com/v1/artists?ids=5rWU8Vm32I8BJtPtrY5JC7%2C20wkVLutqVOYrc0kxFs7rA%2C5069JTmv5ZDyPeZaCCXiCg%2C3fMbdgg4jU18AjLCKBhRSm%2C1rg7cCiRd1SEUz8zGwOnM2%2C2CIMQHirSU0MQqyYHq0eOx"));
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
