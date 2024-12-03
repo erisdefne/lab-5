@@ -1,143 +1,172 @@
 package view;
 
-import java.awt.Component;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import interface_adapter.compare_playlists.PlaylistSimilarityController;
 
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-import interface_adapter.change_password.ChangePasswordController;
-import interface_adapter.change_password.LoggedInState;
-import interface_adapter.change_password.LoggedInViewModel;
-import interface_adapter.logout.LogoutController;
+public class LoggedInView extends JPanel {
 
-/**
- * The View for when the user is logged into the program.
- */
-public class LoggedInView extends JPanel implements PropertyChangeListener {
+    private static final String viewName = "logged in"; // Universal name for this view
+    private boolean isMainPanel = true;         // Tracks whether we're in the main panel or comparison panel
 
-    private final String viewName = "logged in";
-    private final LoggedInViewModel loggedInViewModel;
-    private final JLabel passwordErrorField = new JLabel();
-    private ChangePasswordController changePasswordController;
-    private LogoutController logoutController;
+    // Buttons for different functionalities
+    private JButton genreDistributionButton;
+    private JButton topSongsButton;
+    private JButton topArtistsButton;
+    private JButton recommendSongsButton;
+    private JButton comparePlaylistsButton;
 
-    private final JLabel username;
+    // Text fields for user input
+    private JTextField playlist1NameField;
+    private JTextField playlist1OwnerField;
+    private JTextField playlist2NameField;
+    private JTextField playlist2OwnerField;
+    private JButton submitButton;
 
-    private final JButton logOut;
+    // Controller for Playlist Similarity
+    private PlaylistSimilarityController playlistSimilarityController;
 
-    private final JTextField passwordInputField = new JTextField(15);
-    private final JButton changePassword;
+    // The CardLayout and panel to switch to
+    private JPanel cardPanel;
+    private CardLayout cardLayout;
 
-    public LoggedInView(LoggedInViewModel loggedInViewModel) {
-        this.loggedInViewModel = loggedInViewModel;
-        this.loggedInViewModel.addPropertyChangeListener(this);
+    public LoggedInView(JPanel cardPanel, CardLayout cardLayout) {
+        this.cardPanel = cardPanel;
+        this.cardLayout = cardLayout;
 
-        final JLabel title = new JLabel("Logged In Screen");
-        title.setAlignmentX(Component.CENTER_ALIGNMENT);
+        // Start in the main panel state
+        setLayout(new GridLayout(4, 2, 10, 10)); // 4 rows, 2 columns with gaps
+        initializeMainPanel();                  // Load the main panel view
+    }
 
-        final LabelTextPanel passwordInfo = new LabelTextPanel(
-                new JLabel("Password"), passwordInputField);
+    // Main panel initialization
+    private void initializeMainPanel() {
+        removeAll();
+        revalidate();
+        repaint();
 
-        final JLabel usernameInfo = new JLabel("Currently logged in: ");
-        username = new JLabel();
+        isMainPanel = true; // Mark this as the main panel state
 
-        final JPanel buttons = new JPanel();
-        logOut = new JButton("Log Out");
-        buttons.add(logOut);
+        // Initialize buttons
+        genreDistributionButton = new JButton("Genre Distribution");
+        topSongsButton = new JButton("Top Songs");
+        topArtistsButton = new JButton("Top Artists");
+        recommendSongsButton = new JButton("Recommend Songs");
+        comparePlaylistsButton = new JButton("Compare Playlists");
 
-        changePassword = new JButton("Change Password");
-        buttons.add(changePassword);
+        // Add buttons to the main panel
+        add(genreDistributionButton);
+        add(topSongsButton);
+        add(topArtistsButton);
+        add(recommendSongsButton);
+        add(comparePlaylistsButton);
 
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-
-        passwordInputField.getDocument().addDocumentListener(new DocumentListener() {
-
-            private void documentListenerHelper() {
-                final LoggedInState currentState = loggedInViewModel.getState();
-                currentState.setPassword(passwordInputField.getText());
-                loggedInViewModel.setState(currentState);
-            }
-
+        // Add action listener for "Compare Playlists" button
+        comparePlaylistsButton.addActionListener(new ActionListener() {
             @Override
-            public void insertUpdate(DocumentEvent e) {
-                documentListenerHelper();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                documentListenerHelper();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                documentListenerHelper();
+            public void actionPerformed(ActionEvent e) {
+                showPlaylistComparisonInputs();
             }
         });
-
-        changePassword.addActionListener(
-                // This creates an anonymous subclass of ActionListener and instantiates it.
-                evt -> {
-                    if (evt.getSource().equals(changePassword)) {
-                        final LoggedInState currentState = loggedInViewModel.getState();
-
-                        this.changePasswordController.execute(
-                                currentState.getUsername(),
-                                currentState.getPassword()
-                        );
-                    }
-                }
-        );
-
-        logOut.addActionListener(
-                // This creates an anonymous subclass of ActionListener and instantiates it.
-                evt -> {
-                    if (evt.getSource().equals(logOut)) {
-                        // TODO: execute the logout use case through the Controller
-                        // 1. get the state out of the loggedInViewModel. It contains the username.
-                        // 2. Execute the logout Controller.
-                    }
-                }
-        );
-
-        this.add(title);
-        this.add(usernameInfo);
-        this.add(username);
-
-        this.add(passwordInfo);
-        this.add(passwordErrorField);
-        this.add(buttons);
     }
 
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        if (evt.getPropertyName().equals("state")) {
-            final LoggedInState state = (LoggedInState) evt.getNewValue();
-            username.setText(state.getUsername());
+    /**
+     * Displays input fields for entering playlist names and owners.
+     * This method is triggered when the "Compare Playlists" button is clicked.
+     */
+    private void showPlaylistComparisonInputs() {
+        removeAll();
+        revalidate();
+        repaint();
+
+        isMainPanel = false; // Mark this as the comparison panel state
+
+        setLayout(new GridLayout(6, 2, 10, 10)); // Adjust layout for input fields
+
+        // Initialize input fields
+        JLabel playlist1NameLabel = new JLabel("Playlist 1 Name:");
+        playlist1NameField = new JTextField();
+        JLabel playlist1OwnerLabel = new JLabel("Playlist 1 Owner:");
+        playlist1OwnerField = new JTextField();
+
+        JLabel playlist2NameLabel = new JLabel("Playlist 2 Name:");
+        playlist2NameField = new JTextField();
+        JLabel playlist2OwnerLabel = new JLabel("Playlist 2 Owner:");
+        playlist2OwnerField = new JTextField();
+
+        // Initialize submit button
+        submitButton = new JButton("Submit");
+
+        // Add components to the comparison panel
+        add(playlist1NameLabel);
+        add(playlist1NameField);
+        add(playlist1OwnerLabel);
+        add(playlist1OwnerField);
+
+        add(playlist2NameLabel);
+        add(playlist2NameField);
+        add(playlist2OwnerLabel);
+        add(playlist2OwnerField);
+
+        add(new JLabel()); // Empty cell for alignment
+        add(submitButton);
+
+        // Add action listener for the submit button
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                processPlaylistComparison();
+            }
+        });
+    }
+
+    /**
+     * Processes the playlist comparison by sending user inputs to the Controller.
+     */
+    private void processPlaylistComparison() {
+        String playlist1Name = playlist1NameField.getText().trim();
+        String playlist1Owner = playlist1OwnerField.getText().trim();
+        String playlist2Name = playlist2NameField.getText().trim();
+        String playlist2Owner = playlist2OwnerField.getText().trim();
+
+        if (playlist1Name.isEmpty() || playlist1Owner.isEmpty() ||
+                playlist2Name.isEmpty() || playlist2Owner.isEmpty()) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Please fill in all fields!",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+            return;
         }
-        else if (evt.getPropertyName().equals("password")) {
-            final LoggedInState state = (LoggedInState) evt.getNewValue();
-            JOptionPane.showMessageDialog(null, "password updated for " + state.getUsername());
+
+        if (playlistSimilarityController != null) {
+            playlistSimilarityController.comparePlaylists(
+                    playlist1Name,
+                    playlist1Owner,
+                    playlist2Name,
+                    playlist2Owner
+            );
+
+            cardLayout.show(cardPanel, "Similarity Score Panel");
         }
-
     }
 
-    public String getViewName() {
-        return viewName;
+    /**
+     * Switches back to the main panel state (buttons view).
+     */
+    public void switchToMainPanel() {
+        initializeMainPanel();
     }
 
-    public void setChangePasswordController(ChangePasswordController changePasswordController) {
-        this.changePasswordController = changePasswordController;
+    public static String getViewName() {
+        return viewName; // The universal name for this view
     }
 
-    public void setLogoutController(LogoutController logoutController) {
-        // TODO: save the logout controller in the instance variable.
+    public void setPlaylistSimilarityController(PlaylistSimilarityController playlistSimilarityController) {
+        this.playlistSimilarityController = playlistSimilarityController;
     }
 }
